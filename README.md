@@ -24,8 +24,8 @@
   <h3>Features</h3>
   <ul>
     <li>Crear, guardar y administrar listas de compras de juegos</li>
-    <li>Adaptar el carrito omitiendo los juegos que ya tengas<li>
-    <li>Adaptar el carrito para regalar juegos a un amigo (omitiendo los juegos que ya tenga)<li>
+    <li>Adaptar el carrito omitiendo los juegos que ya tengas</li>
+    <li>Adaptar el carrito para regalar juegos a un amigo (omitiendo los juegos que ya tenga)</li>
     <li>Mostrarte si algún juego tuvo un precio histórico mas bajo (🚧 En desarrollo)</li>
   </ul>
 </p>
