@@ -2,13 +2,32 @@
   "manifest_version": 3,
   "name": "Steam Cart Helper",
   "version": "1.0",
-  "description": "🛒 Extensión para navegadores Chromium que te ayuda a ahorrar tiempo y dinero agregando funcionalidades al carrito de compras de Steam",
+  "description": "🛒 Extensión que te ayuda a ahorrar tiempo y dinero agregando funcionalidades al carrito de compras de Steam",
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "images/icon-16.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
   },
+  "permissions": ["scripting", "storage"],
+  "host_permissions": [
+    "https://store.steampowered.com/*",
+    "https://steamcommunity.com/profiles/*"
+  ],
   "action": {
     "default_popup": "popup.html"
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://store.steampowered.com/app/*"],
+      "js": ["scripts/savePurchaseIds.js"]
+    },
+    {
+      "matches": ["https://store.steampowered.com/cart*"],
+      "js": ["scripts/cartManager.js"]
+    },
+    {
+      "matches": ["https://steamcommunity.com/profiles/*/friends*"],
+      "js": ["scripts/saveUserGames.js"]
+    }
+  ]
 }
