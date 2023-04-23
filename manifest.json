@@ -26,7 +26,10 @@
       "js": ["scripts/cartManager.js"]
     },
     {
-      "matches": ["https://steamcommunity.com/profiles/*/friends*"],
+      "matches": [
+        "https://steamcommunity.com/profiles/*/friends*",
+        "https://steamcommunity.com/id/*/friends*"
+      ],
       "js": ["scripts/saveUserGames.js"]
     }
   ]

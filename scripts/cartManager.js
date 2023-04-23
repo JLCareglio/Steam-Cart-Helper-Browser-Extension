@@ -1,13 +1,30 @@
-const leftCol = document.querySelector(".leftcol");
-const cartItemList = document.querySelector(".cart_item_list");
-const urlFriends = document.querySelector(
-  '.submenu_username a[href*="/friends"]'
-).href;
-// const resp = await fetch(urlFriends);
-chrome.storage.local.get("savedUsers", (result) => {
-  const users = result.savedUsers || [];
+(async () => {
+  const leftCol = document.querySelector(".leftcol");
+  const cartItemList = document.querySelector(".cart_item_list");
+  const urlFriends = document.querySelector(
+    '.submenu_username a[href*="/friends"]'
+  ).href;
+  // const resp = await fetch(urlFriends);
+  // console.log(resp);
+  const users = (await chrome.storage.local.get("savedUsers")).savedUsers || [];
   console.log("Usuarios actualmente guardados:");
   console.log(users);
+  const savedPurchaseIds =
+    (await chrome.storage.local.get("savedPurchaseIds")).savedPurchaseIds || [];
+  console.log("Compras actualmente guardadas:");
+  console.log(savedPurchaseIds);
+
+  async function getData() {
+    const users =
+      (await chrome.storage.local.get("savedUsers")).savedUsers || [];
+    console.log("Usuarios actualmente guardados:");
+    console.log(users);
+    const savedPurchaseIds =
+      (await chrome.storage.local.get("savedPurchaseIds")).savedPurchaseIds ||
+      [];
+    console.log("Compras actualmente guardadas:");
+    console.log(savedPurchaseIds);
+  }
 
   const btnAddGamesToCart = document.createElement("button");
   btnAddGamesToCart.innerHTML = "📋 Agregar juegos en lista";
@@ -31,16 +48,16 @@ chrome.storage.local.get("savedUsers", (result) => {
 
       for (const game of savedPurchaseIdsFilter) {
         newCartItem.innerHTML = `
-        <div class="cart_row even app_impression_tracked">
-          <div class="cart_item" style="text-align: center; display: flex; flex-direction: column; justify-content: space-evenly; font-size: 22px;">
-            <p>
-              👀 cargando ${i} de ${savedPurchaseIdsFilter.length}
-            </p>
-            <p>
-            🎮 ${game.name} <=> 🔑 ${game.subId}
-            </p>
-          </div>
-        </div>`;
+          <div class="cart_row even app_impression_tracked">
+            <div class="cart_item" style="text-align: center; display: flex; flex-direction: column; justify-content: space-evenly; font-size: 22px;">
+              <p>
+                👀 cargando ${i} de ${savedPurchaseIdsFilter.length}
+              </p>
+              <p>
+              🎮 ${game.name} <=> 🔑 ${game.subId}
+              </p>
+            </div>
+          </div>`;
 
         cartItemList.prepend(newCartItem);
         const resp = await myAddToCart(game.subId);
@@ -48,11 +65,11 @@ chrome.storage.local.get("savedUsers", (result) => {
         i++;
       }
       newCartItem.innerHTML = `
-      <div class="cart_row even app_impression_tracked">
-        <p class="cart_item" style="display: flex; justify-content: center; align-items: center; font-size: 22px;">
-          ✅ recargando pagina...
-        </p>
-      </div>`;
+        <div class="cart_row even app_impression_tracked">
+          <p class="cart_item" style="display: flex; justify-content: center; align-items: center; font-size: 22px;">
+            ✅ recargando pagina...
+          </p>
+        </div>`;
       cartItemList.prepend(newCartItem);
 
       console.log("Juegos cargados, recargando pagina...");
@@ -140,4 +157,4 @@ chrome.storage.local.get("savedUsers", (result) => {
         });
     });
   };
-});
+})();

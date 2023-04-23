@@ -27,6 +27,8 @@
   --outline: #938f99;
   --surface-variant: #49454f;
   --on-surface-variant: #cac4d0;
+  /* constantes */
+  --shape-corner: 12px;
 }
 
 body {
@@ -34,4 +36,28 @@ body {
   color: var(--on-background);
   width: 300px;
   text-align: center;
+}
+
+a {
+  text-decoration: none;
+}
+
+button {
+  background-color: var(--primary-container);
+  color: var(--on-primary-container);
+  border: none;
+  padding: 6px;
+  margin: 4px;
+  border-radius: var(--shape-corner);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
 }
