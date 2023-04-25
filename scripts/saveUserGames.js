@@ -19,7 +19,7 @@ chrome.storage.local.get("savedUsers", (result) => {
     btn.style.zIndex = "3";
     btn.style.height = "50%";
     const btnUpdate = btn.cloneNode();
-    btnUpdate.innerText = "🔃";
+    btnUpdate.innerText = "🔄️";
     btnUpdate.style.bottom = "0";
     if (users.some((user) => user.id == friendId)) {
       btn.innerText = "➖";
@@ -71,7 +71,7 @@ chrome.storage.local.get("savedUsers", (result) => {
       clearInterval(intervalId);
       btnUpdate.innerText = "✅";
       setTimeout(() => {
-        btnUpdate.innerText = "🔃";
+        btnUpdate.innerText = "🔄️";
       }, 500);
     });
     friend.prepend(btnUpdate);
