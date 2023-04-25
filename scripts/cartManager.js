@@ -1,6 +1,7 @@
 (async () => {
   const leftCol = document.querySelector(".leftcol");
   const cartItemList = document.querySelector(".cart_item_list");
+
   const urlFriends = document.querySelector(
     '.submenu_username a[href*="/friends"]'
   ).href;
@@ -14,18 +15,6 @@
   console.log("Compras actualmente guardadas:");
   console.log(savedPurchaseIds);
 
-  async function getData() {
-    const users =
-      (await chrome.storage.local.get("savedUsers")).savedUsers || [];
-    console.log("Usuarios actualmente guardados:");
-    console.log(users);
-    const savedPurchaseIds =
-      (await chrome.storage.local.get("savedPurchaseIds")).savedPurchaseIds ||
-      [];
-    console.log("Compras actualmente guardadas:");
-    console.log(savedPurchaseIds);
-  }
-
   const btnAddGamesToCart = document.createElement("button");
   btnAddGamesToCart.innerHTML = "📋 Agregar juegos en lista";
   btnAddGamesToCart.classList.add("btn_black");
@@ -34,20 +23,30 @@
   btnAddGamesToCart.addEventListener("click", async () => {
     chrome.storage.local.get("savedPurchaseIds", async (result) => {
       const savedPurchaseIds = result.savedPurchaseIds || [];
-      console.log("Compras actualmente guardadas:");
-      console.log(savedPurchaseIds);
 
-      const user = users.find((user) => user.id == inputFilterByUser.value);
-      const savedPurchaseIdsFilter = savedPurchaseIds.filter(
-        (game) =>
-          !user?.games?.some((userGame) => userGame.appid == parseInt(game.id))
-      );
+      const userSelectedId = document.querySelector(
+        '#opciones option[value="' +
+          document.querySelector("#inputFilterByUser").value +
+          '"]'
+      )?.dataset.id;
+      const cartItems = Array.from(cartItemList.querySelectorAll(".cart_row"));
+      const user = users.find((user) => user.id == userSelectedId);
+      const savedPurchaseIdsFilter = savedPurchaseIds.filter((game) => {
+        return (
+          !cartItems.some(
+            (cartItem) => cartItem.dataset.dsAppid == game.gameId
+          ) && !user?.games?.some((userGame) => userGame.appid == game.gameId)
+        );
+      });
+      console.log("juegos ya filtrados:");
+      console.log(savedPurchaseIdsFilter);
 
       let newCartItem = document.createElement("div");
       let i = 1;
 
-      for (const game of savedPurchaseIdsFilter) {
-        newCartItem.innerHTML = `
+      if (savedPurchaseIdsFilter.length) {
+        for (const game of savedPurchaseIdsFilter) {
+          newCartItem.innerHTML = `
           <div class="cart_row even app_impression_tracked">
             <div class="cart_item" style="text-align: center; display: flex; flex-direction: column; justify-content: space-evenly; font-size: 22px;">
               <p>
@@ -59,21 +58,20 @@
             </div>
           </div>`;
 
-        cartItemList.prepend(newCartItem);
-        const resp = await myAddToCart(game.subId);
-        console.log(resp);
-        i++;
-      }
-      newCartItem.innerHTML = `
+          cartItemList.prepend(newCartItem);
+          const resp = await MyAddToCart({ subid: game.purchaseId });
+          console.log(resp);
+          i++;
+        }
+        newCartItem.innerHTML = `
         <div class="cart_row even app_impression_tracked">
           <p class="cart_item" style="display: flex; justify-content: center; align-items: center; font-size: 22px;">
             ✅ recargando pagina...
           </p>
         </div>`;
-      cartItemList.prepend(newCartItem);
-
-      console.log("Juegos cargados, recargando pagina...");
-      // window.location.reload();
+        cartItemList.prepend(newCartItem);
+        window.location.reload();
+      }
     });
   });
   // btnAddGamesToCart.addEventListener("click", async () => {
@@ -116,41 +114,40 @@
   leftCol.prepend(btnAddGamesToCart);
   leftCol.prepend(btnDelSaveGames);
 
-  const myAddToCart = (subid) => {
+  const MyAddToCart = (request) => {
+    const g_sessionID = document.querySelector("[name='sessionid']").value;
+    const formData = new FormData();
+    formData.set("action", "add_to_cart");
+
+    if (request.subid) {
+      formData.set("subid", parseInt(request.subid, 10));
+    } else if (request.bundleid) {
+      formData.set("bundleid", parseInt(request.bundleid, 10));
+    } else {
+      return Promise.reject(
+        new Error("Error: no se ha especificado ni subid ni bundleid")
+      );
+    }
+
+    formData.set("sessionid", g_sessionID);
+
     return new Promise((resolve, reject) => {
-      const g_sessionID = document.querySelector("[name='sessionid']").value;
-      const form = document.createElement("form");
-      form.setAttribute("name", `add_to_cart_${subid}`);
-      form.setAttribute("action", "https://store.steampowered.com/cart/");
-      form.setAttribute("method", "POST");
-      form.style.display = "none";
-
-      const actionInput = document.createElement("input");
-      actionInput.setAttribute("type", "hidden");
-      actionInput.setAttribute("name", "action");
-      actionInput.setAttribute("value", "add_to_cart");
-
-      const subidInput = document.createElement("input");
-      subidInput.setAttribute("type", "hidden");
-      subidInput.setAttribute("name", "subid");
-      subidInput.setAttribute("value", subid);
-
-      const sessionidInput = document.createElement("input");
-      sessionidInput.setAttribute("type", "hidden");
-      sessionidInput.setAttribute("name", "sessionid");
-      sessionidInput.setAttribute("value", g_sessionID);
-
-      form.appendChild(actionInput);
-      form.appendChild(subidInput);
-      form.appendChild(sessionidInput);
-
-      window.document.body.appendChild(form);
-      fetch(form.action, {
+      fetch(`https://store.steampowered.com/cart/addtocart`, {
+        credentials: "include",
         method: "POST",
-        body: new FormData(form),
+        body: formData,
+        headers: {
+          "X-Requested-With": "SteamDB",
+        },
       })
         .then((response) => {
-          resolve(response);
+          if (response.status === 401) {
+            storeSessionId = null;
+          }
+          return response.json();
+        })
+        .then((data) => {
+          resolve(data);
         })
         .catch((error) => {
           reject(error);
