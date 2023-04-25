@@ -53,7 +53,7 @@
                 👀 cargando ${i} de ${savedPurchaseIdsFilter.length}
               </p>
               <p>
-              🎮 ${game.name} <=> 🔑 ${game.subId}
+              🎮 ${game.name}
               </p>
             </div>
           </div>`;
@@ -137,7 +137,7 @@
         method: "POST",
         body: formData,
         headers: {
-          "X-Requested-With": "SteamDB",
+          "X-Requested-With": "SteamCartHelper",
         },
       })
         .then((response) => {
