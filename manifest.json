@@ -11,7 +11,7 @@
   "permissions": ["scripting", "storage"],
   "host_permissions": [
     "https://store.steampowered.com/*",
-    "https://steamcommunity.com/profiles/*"
+    "https://steamcommunity.com/*"
   ],
   "action": {
     "default_popup": "popup.html"
