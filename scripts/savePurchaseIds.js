@@ -1,53 +1,70 @@
-const url = window.location.href;
-const gameId = url.split("/app/")[1].split("/")[0];
-const subIds = document.querySelectorAll('[name="subid"]');
-const bundleIds = document.querySelectorAll('[name="bundleid"]');
+(async () => {
+  const url = window.location.href;
+  const gameId = url.split("/app/")[1].split("/")[0];
+  const subIds = document.querySelectorAll('[name="subid"]');
+  const bundleIds = document.querySelectorAll('[name="bundleid"]');
+  let savedPurchaseIdLists = (
+    await chrome.storage.local.get("savedPurchaseIdLists")
+  ).savedPurchaseIdLists || [
+    { listName: "Lista por Defecto", purchaseIds: [] },
+  ];
+  console.log(savedPurchaseIdLists);
 
-chrome.storage.local.get("savedPurchaseIds", (result) => {
-  let savedPurchaseIds = result.savedPurchaseIds || [];
-  console.log(savedPurchaseIds);
-  [...subIds, ...bundleIds].forEach((product) => {
-    const purchaseId = product.value;
-    const name = product
-      .closest(".game_area_purchase_game_wrapper")
-      .querySelector("h1")
-      .textContent.trim()
-      .replace(/^(\w+\s)/, "")
-      .split("\t")[0];
+  [...subIds, ...bundleIds].forEach((purchase) => {
+    const purchaseId = purchase.value;
+    if (purchase.value) {
+      const typeId = purchase.name;
+      const name = purchase
+        .closest(".game_area_purchase_game_wrapper")
+        .querySelector("h1")
+        .textContent.trim()
+        .replace(/^(\w+\s)/, "")
+        .split("\t")[0];
 
-    const button = document.createElement("button");
-    button.innerHTML = savedPurchaseIds.some(
-      (product) => product.purchaseId == purchaseId
-    )
-      ? "➖ Quitar"
-      : "➕ Guardar";
-    button.classList.add("btn_black");
-    button.style.height = "22px";
-    button.style.width = "80px";
-    button.style.padding = "0 4px";
+      const button = document.createElement("button");
+      const hasPurchaseInLists = savedPurchaseIdLists.some((list) =>
+        list.purchaseIds.some((p) => p[typeId] == purchaseId)
+      );
+      button.innerHTML = hasPurchaseInLists
+        ? "🗑️ Eliminar" //"📝 Administrar"
+        : "💾 Guardar";
+      button.classList.add("btn_black");
+      button.style.height = "22px";
+      button.style.width = "104px";
+      button.style.padding = "0 4px";
+      purchase.parentElement.after(button);
 
-    product.parentElement.after(button);
-
-    button.addEventListener("click", () => {
-      chrome.storage.local.get("savedPurchaseIds", (result) => {
-        let savedProductIds = result.savedPurchaseIds || [];
-        const index = savedProductIds.findIndex(
-          (product) => product.purchaseId == purchaseId
+      button.addEventListener("click", () => {
+        const [inLists, notInLists] = savedPurchaseIdLists.reduce(
+          ([inList, notInList], list) => {
+            return list.purchaseIds.some((p) => p[typeId] == purchaseId)
+              ? [[...inList, list], notInList]
+              : [inList, [...notInList, list]];
+          },
+          [[], []]
         );
-
-        if (index === -1) {
-          savedProductIds.push({ gameId, purchaseId, name });
-          button.innerHTML = "➖ Quitar";
+        if (!inLists.length) {
+          savedPurchaseIdLists[0].purchaseIds.push({
+            gameId,
+            [typeId]: purchaseId,
+            name,
+          });
+          // button.innerHTML = "📝 Administrar";
+          button.innerHTML = "🗑️ Eliminar";
         } else {
-          savedProductIds.splice(index, 1);
-          button.innerHTML = "➕ Guardar";
+          const newLists = inLists.map((list) => {
+            return {
+              ...list,
+              purchaseIds: list.purchaseIds.filter(
+                (purchase) => purchase[typeId] != purchaseId
+              ),
+            };
+          });
+          savedPurchaseIdLists = [...newLists, ...notInLists];
+          button.innerHTML = "💾 Guardar";
         }
-
-        chrome.storage.local.set(
-          { savedPurchaseIds: savedProductIds },
-          () => {}
-        );
+        chrome.storage.local.set({ savedPurchaseIdLists }, () => {});
       });
-    });
+    }
   });
-});
+})();

@@ -8,6 +8,8 @@ chrome.storage.local.get("savedUsers", (result) => {
 
   searchResults.forEach((friend) => {
     let friendId = friend.dataset.steamid;
+    let friendMiniProfile = friend.dataset.miniprofile;
+    let friendImg = friend.querySelector("img").src;
     let friendName = friend
       .querySelector(".friend_block_content")
       .textContent.trim()
@@ -33,7 +35,12 @@ chrome.storage.local.get("savedUsers", (result) => {
         const index = users.findIndex((user) => user.id == friendId);
 
         if (index === -1) {
-          users.push({ id: friendId, userName: friendName });
+          users.push({
+            id: friendId,
+            userName: friendName,
+            miniProfile: friendMiniProfile,
+            img: friendImg,
+          });
           btn.innerHTML = "➖";
           btnUpdate.hidden = false;
           btnUpdate.dispatchEvent(new MouseEvent("click"));
@@ -97,7 +104,7 @@ chrome.storage.local.get("savedUsers", (result) => {
       let index = users.findIndex((user) => user.id === userID);
 
       if (index === -1) {
-        users.push({ id: userID, userName, games });
+        throw `userId "${userId}" no encontrado`
       } else {
         users[index].userName = userName;
         users[index].games = games;
@@ -110,3 +117,4 @@ chrome.storage.local.get("savedUsers", (result) => {
     });
   };
 });
+ 

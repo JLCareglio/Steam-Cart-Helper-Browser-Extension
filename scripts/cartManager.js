@@ -1,19 +1,13 @@
 (async () => {
   const leftCol = document.querySelector(".leftcol");
   const cartItemList = document.querySelector(".cart_item_list");
-
-  const urlFriends = document.querySelector(
-    '.submenu_username a[href*="/friends"]'
-  ).href;
+  // const urlFriends = document.querySelector(
+  //   '.submenu_username a[href*="/friends"]'
+  // ).href;
   // const resp = await fetch(urlFriends);
   // console.log(resp);
+
   const users = (await chrome.storage.local.get("savedUsers")).savedUsers || [];
-  console.log("Usuarios actualmente guardados:");
-  console.log(users);
-  const savedPurchaseIds =
-    (await chrome.storage.local.get("savedPurchaseIds")).savedPurchaseIds || [];
-  console.log("Compras actualmente guardadas:");
-  console.log(savedPurchaseIds);
 
   const btnAddGamesToCart = document.createElement("button");
   btnAddGamesToCart.innerHTML = "📋 Agregar juegos en lista";
@@ -21,32 +15,39 @@
   btnAddGamesToCart.style.height = "29px";
   btnAddGamesToCart.style.padding = "0 4px";
   btnAddGamesToCart.addEventListener("click", async () => {
-    chrome.storage.local.get("savedPurchaseIds", async (result) => {
-      const savedPurchaseIds = result.savedPurchaseIds || [];
+    let savedPurchaseIdLists = (
+      await chrome.storage.local.get("savedPurchaseIdLists")
+    ).savedPurchaseIdLists || [
+      { listName: "Lista por Defecto", purchaseIds: [] },
+    ];
 
-      const userSelectedId = document.querySelector(
-        '#opciones option[value="' +
-          document.querySelector("#inputFilterByUser").value +
-          '"]'
-      )?.dataset.id;
-      const cartItems = Array.from(cartItemList.querySelectorAll(".cart_row"));
-      const user = users.find((user) => user.id == userSelectedId);
-      const savedPurchaseIdsFilter = savedPurchaseIds.filter((game) => {
-        return (
-          !cartItems.some(
-            (cartItem) => cartItem.dataset.dsAppid == game.gameId
-          ) && !user?.games?.some((userGame) => userGame.appid == game.gameId)
-        );
-      });
-      console.log("juegos ya filtrados:");
-      console.log(savedPurchaseIdsFilter);
+    const savedPurchaseIds = savedPurchaseIdLists[0].purchaseIds;
+    console.log("savedPurchaseIds:");
+    console.log(savedPurchaseIds);
 
-      let newCartItem = document.createElement("div");
-      let i = 1;
+    const userSelectedId = document.querySelector(
+      '#opciones option[value="' +
+        document.querySelector("#inputFilterByUser").value +
+        '"]'
+    )?.dataset.id;
+    const cartItems = Array.from(cartItemList.querySelectorAll(".cart_row"));
+    const user = users.find((user) => user.id == userSelectedId);
+    const savedPurchaseIdsFilter = savedPurchaseIds.filter((game) => {
+      return (
+        !cartItems.some(
+          (cartItem) => cartItem.dataset.dsAppid == game.gameId
+        ) && !user?.games?.some((userGame) => userGame.appid == game.gameId)
+      );
+    });
+    console.log("juegos ya filtrados:");
+    console.log(savedPurchaseIdsFilter);
 
-      if (savedPurchaseIdsFilter.length) {
-        for (const game of savedPurchaseIdsFilter) {
-          newCartItem.innerHTML = `
+    let newCartItem = document.createElement("div");
+    let i = 1;
+
+    if (savedPurchaseIdsFilter.length) {
+      for (const game of savedPurchaseIdsFilter) {
+        newCartItem.innerHTML = `
           <div class="cart_row even app_impression_tracked">
             <div class="cart_item" style="text-align: center; display: flex; flex-direction: column; justify-content: space-evenly; font-size: 22px;">
               <p>
@@ -58,21 +59,20 @@
             </div>
           </div>`;
 
-          cartItemList.prepend(newCartItem);
-          const resp = await MyAddToCart({ subid: game.purchaseId });
-          console.log(resp);
-          i++;
-        }
-        newCartItem.innerHTML = `
+        cartItemList.prepend(newCartItem);
+        const resp = await MyAddToCart(game);
+        console.log(resp);
+        i++;
+      }
+      newCartItem.innerHTML = `
         <div class="cart_row even app_impression_tracked">
           <p class="cart_item" style="display: flex; justify-content: center; align-items: center; font-size: 22px;">
             ✅ recargando pagina...
           </p>
         </div>`;
-        cartItemList.prepend(newCartItem);
-        window.location.reload();
-      }
-    });
+      cartItemList.prepend(newCartItem);
+      window.location.reload();
+    }
   });
   // btnAddGamesToCart.addEventListener("click", async () => {
   //   const savedPurchaseIds = JSON.parse(localStorage.getItem("savedPurchaseIds"));
@@ -88,7 +88,14 @@
   btnDelSaveGames.style.margin = "0 2px 0 0";
   btnDelSaveGames.style.padding = "0 4px";
   btnDelSaveGames.addEventListener("click", () => {
-    chrome.storage.local.remove("savedPurchaseIds");
+    // chrome.storage.local.remove("savedPurchaseIdLists");
+    chrome.storage.local.get("savedPurchaseIdLists", (res) => {
+      let savedPurchaseIdLists = res.savedPurchaseIdLists || [
+        { listName: "Lista por Defecto", purchaseIds: [] },
+      ];
+      savedPurchaseIdLists[0].purchaseIds = [];
+      chrome.storage.local.set({ savedPurchaseIdLists }, () => {});
+    });
   });
 
   const inputFilterByUser = document.createElement("input");
