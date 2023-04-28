@@ -3,7 +3,7 @@
 </p>
 <h1 align="center"> SCH - Steam Cart Helper - Chromium Extension </h1>
 <p align="left">
-  <img src="https://img.shields.io/badge/license-MIT%20with%20Royalty%20Clause-green">
+  <img src="https://img.shields.io/badge/license-MIT-blue">
   <img src="https://img.shields.io/badge/status-in%20development-yellow">
   <br>
   <img src="https://img.shields.io/github/stars/JLCareglio?style=social">
