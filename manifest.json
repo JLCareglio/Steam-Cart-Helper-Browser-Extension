@@ -2,12 +2,15 @@
   "manifest_version": 3,
   "name": "Steam Cart Helper",
   "version": "1.0",
-  "description": "🛒 Extensión que te ayuda a ahorrar tiempo y dinero agregando funcionalidades al carrito de compras de Steam",
+  "default_locale": "es",
+  "description": "🛒 Extensión que te ayuda a ahorrar tiempo agregando funcionalidades al carrito de compras de Steam",
   "icons": {
     "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
     "48": "images/icon-48.png",
     "128": "images/icon-128.png"
   },
+  "author": "Jesús Lautaro Careglio Albornoz",
   "permissions": ["scripting", "storage"],
   "host_permissions": [
     "https://store.steampowered.com/*",
