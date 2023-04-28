@@ -26,8 +26,8 @@
         list.purchaseIds.some((p) => p[typeId] == purchaseId)
       );
       button.innerHTML = hasPurchaseInLists
-        ? "🗑️ Eliminar" //"📝 Administrar"
-        : "💾 Guardar";
+        ? "🗑️ eliminar" //"📝 Administrar"
+        : "💾 guardar";
       button.classList.add("btn_black");
       button.style.height = "22px";
       button.style.width = "104px";
@@ -50,7 +50,7 @@
             name,
           });
           // button.innerHTML = "📝 Administrar";
-          button.innerHTML = "🗑️ Eliminar";
+          button.innerHTML = "🗑️ eliminar";
         } else {
           const newLists = inLists.map((list) => {
             return {
@@ -61,7 +61,7 @@
             };
           });
           savedPurchaseIdLists = [...newLists, ...notInLists];
-          button.innerHTML = "💾 Guardar";
+          button.innerHTML = "💾 guardar";
         }
         chrome.storage.local.set({ savedPurchaseIdLists }, () => {});
       });

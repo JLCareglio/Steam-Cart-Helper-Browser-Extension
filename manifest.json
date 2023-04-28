@@ -27,10 +27,11 @@
     },
     {
       "matches": [
-        "https://steamcommunity.com/profiles/*/friends*",
-        "https://steamcommunity.com/id/*/friends*"
+        "https://steamcommunity.com/profiles/*/friends*sch=1*",
+        "https://steamcommunity.com/id/*/friends*sch=1*"
       ],
-      "js": ["scripts/saveUserGames.js"]
+      "js": ["scripts/saveUserGames.js"],
+      "run_at": "document_start"
     }
   ]
 }

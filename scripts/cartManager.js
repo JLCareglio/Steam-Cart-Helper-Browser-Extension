@@ -10,7 +10,7 @@
   const users = (await chrome.storage.local.get("savedUsers")).savedUsers || [];
 
   const btnAddGamesToCart = document.createElement("button");
-  btnAddGamesToCart.innerHTML = "📋 Agregar juegos en lista";
+  btnAddGamesToCart.innerHTML = "➕ agregar guardados";
   btnAddGamesToCart.classList.add("btn_black");
   btnAddGamesToCart.style.height = "29px";
   btnAddGamesToCart.style.padding = "0 4px";
@@ -82,7 +82,7 @@
   // });
 
   const btnDelSaveGames = document.createElement("button");
-  btnDelSaveGames.innerHTML = "🗑️ Eliminar lista";
+  btnDelSaveGames.innerHTML = "🗑️ eliminar guardados";
   btnDelSaveGames.classList.add("btn_black");
   btnDelSaveGames.style.height = "29px";
   btnDelSaveGames.style.margin = "0 2px 0 0";
@@ -106,7 +106,7 @@
   inputFilterByUser.setAttribute("type", "search");
   inputFilterByUser.setAttribute("id", "inputFilterByUser");
   inputFilterByUser.setAttribute("list", "opciones");
-  inputFilterByUser.placeholder = "🎁 Regalar a:";
+  inputFilterByUser.placeholder = "🎁 regalar a:";
   const datalist = document.createElement("datalist");
   datalist.setAttribute("id", "opciones");
   users.forEach((user) => {
