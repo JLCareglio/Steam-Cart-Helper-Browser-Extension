@@ -3,7 +3,7 @@
 </p>
 <h1 align="center"> SCH - Steam Cart Helper - Chromium Extension </h1>
 <p align="left">
-  <img src="https://img.shields.io/badge/license-MIT%20with%20Royalty%20Clause-green">
+  <img src="https://img.shields.io/badge/license-MIT-blue">
   <img src="https://img.shields.io/badge/status-in%20development-yellow">
   <br>
   <img src="https://img.shields.io/github/stars/JLCareglio?style=social">
@@ -19,14 +19,13 @@
 ## Descripción
 
 <p>
-  🛒 Extensión para navegadores Chromium que te ayuda a ahorrar tiempo y dinero agregando funcionalidades al carrito de compras de Steam
+  🛒 Extensión para navegadores Chromium que te ayuda a ahorrar tiempo agregando funcionalidades al carrito de compras de Steam
   <br>
   <h3>Features</h3>
   <ul>
-    <li>Crear, guardar y administrar listas de compras de juegos</li>
+    <li>Crear, guardar y administrar listas de compras de juegos (por ahora solo gestiona una lista por defecto)</li>
     <li>Adaptar el carrito omitiendo los juegos que ya tengas</li>
     <li>Adaptar el carrito para regalar juegos a un amigo (omitiendo los juegos que ya tenga)</li>
-    <li>Mostrarte si algún juego tuvo un precio histórico mas bajo (🚧 En desarrollo)</li>
   </ul>
 </p>
 
