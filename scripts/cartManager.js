@@ -1,11 +1,11 @@
-(async () => {
-  const leftCol = document.querySelector(".leftcol");
+document.addEventListener("DOMContentLoaded", async () => {
+  const leftCol = document.createElement("div");
+  leftCol.className = "leftcol";
+  leftCol.style.display = "flex";
+  leftCol.style.flexWrap = "wrap";
+  document.querySelector(".leftcol").style.marginTop = "2px";
+  document.querySelector(".leftcol").parentNode.prepend(leftCol);
   const cartItemList = document.querySelector(".cart_item_list");
-  // const urlFriends = document.querySelector(
-  //   '.submenu_username a[href*="/friends"]'
-  // ).href;
-  // const resp = await fetch(urlFriends);
-  // console.log(resp);
 
   const users = (await chrome.storage.local.get("savedUsers")).savedUsers || [];
 
@@ -13,6 +13,7 @@
   btnAddGamesToCart.innerHTML = "➕ agregar guardados";
   btnAddGamesToCart.classList.add("btn_black");
   btnAddGamesToCart.style.height = "29px";
+  btnAddGamesToCart.style.margin = "2px";
   btnAddGamesToCart.style.padding = "0 4px";
   btnAddGamesToCart.addEventListener("click", async () => {
     let savedPurchaseIdLists = (
@@ -26,7 +27,7 @@
     console.log(savedPurchaseIds);
 
     const userSelectedId = document.querySelector(
-      '#opciones option[value="' +
+      '#options option[value="' +
         document.querySelector("#inputFilterByUser").value +
         '"]'
     )?.dataset.id;
@@ -85,7 +86,7 @@
   btnDelSaveGames.innerHTML = "🗑️ eliminar guardados";
   btnDelSaveGames.classList.add("btn_black");
   btnDelSaveGames.style.height = "29px";
-  btnDelSaveGames.style.margin = "0 2px 0 0";
+  btnDelSaveGames.style.margin = "2px";
   btnDelSaveGames.style.padding = "0 4px";
   btnDelSaveGames.addEventListener("click", () => {
     // chrome.storage.local.remove("savedPurchaseIdLists");
@@ -100,15 +101,16 @@
 
   const inputFilterByUser = document.createElement("input");
   inputFilterByUser.classList.add("btn_black");
-  inputFilterByUser.style.height = "26px";
-  inputFilterByUser.style.margin = "0 0 0 2px";
+  inputFilterByUser.style.height = "29px";
+  inputFilterByUser.style.margin = "2px";
   inputFilterByUser.style.padding = "0 4px";
   inputFilterByUser.setAttribute("type", "search");
   inputFilterByUser.setAttribute("id", "inputFilterByUser");
-  inputFilterByUser.setAttribute("list", "opciones");
-  inputFilterByUser.placeholder = "🎁 regalar a:";
+  inputFilterByUser.setAttribute("list", "options");
+  inputFilterByUser.placeholder = "🎁 comprar para: mi";
+  inputFilterByUser.addEventListener("click", (e) => (e.target.value = ""));
   const datalist = document.createElement("datalist");
-  datalist.setAttribute("id", "opciones");
+  datalist.setAttribute("id", "options");
   users.forEach((user) => {
     const option = document.createElement("option");
     option.value = user.userName;
@@ -117,9 +119,9 @@
   });
   inputFilterByUser.appendChild(datalist);
 
-  leftCol.prepend(inputFilterByUser);
-  leftCol.prepend(btnAddGamesToCart);
   leftCol.prepend(btnDelSaveGames);
+  leftCol.prepend(btnAddGamesToCart);
+  leftCol.prepend(inputFilterByUser);
 
   const MyAddToCart = (request) => {
     const g_sessionID = document.querySelector("[name='sessionid']").value;
@@ -161,4 +163,4 @@
         });
     });
   };
-})();
+});

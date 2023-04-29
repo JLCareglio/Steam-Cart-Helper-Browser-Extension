@@ -45,7 +45,7 @@ a {
 button {
   background-color: var(--primary-container);
   color: var(--on-primary-container);
-  border: none;
+  border: 1px solid var(--primary-container);
   padding: 6px;
   margin: 4px;
   border-radius: var(--shape-corner);
@@ -54,10 +54,42 @@ button {
   flex-direction: column;
   align-items: center;
 }
+button:hover {
+  border: 1px solid var(--primary);
+}
+button:disabled,
+button[disabled] {
+  background-color: var(--surface-variant);
+  color: var(--on-surface-variant);
+  border: 1px solid var(--surface-variant);
+  cursor: default;
+}
 
 .buttons-container {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
+}
+
+header {
+  background-color: #f2f2f2;
+  padding: 20px;
+}
+
+.logo {
+  float: left;
+}
+
+.user-info {
+  display: inline-block;
+  float: right;
+}
+
+.icon {
+  margin-right: 10px;
+}
+
+.name {
+  font-weight: bold;
 }

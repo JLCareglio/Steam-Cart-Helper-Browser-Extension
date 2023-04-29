@@ -5,10 +5,20 @@
   const html = await resp.text();
   const parser = new DOMParser();
   const doc = parser.parseFromString(html, "text/html");
-  const steamId = JSON.parse(
+  const userInfo = JSON.parse(
     doc.querySelector("#webui_config").dataset.userinfo
-  ).steamid;
-  btnFriend.href = `https://steamcommunity.com/profiles/${steamId}/friends?sch=1`;
+  );
+  2;
+  const actionMenu = doc.getElementById("global_actions");
+  const userName = actionMenu
+    .querySelector("#account_pulldown")
+    .innerText.replace(/[\n\t]/g, "");
+  const userImg = actionMenu.querySelector(".user_avatar img").src;
+  const steamId = userInfo.steamid;
+  const miniProfile = userInfo.accountid;
+  btnFriend.addEventListener("click", () =>
+    window.open(`https://steamcommunity.com/profiles/${steamId}/friends?sch=1`)
+  );
   btnFriend.disabled = false;
 })();
 
