@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="160" height="160" alt="CacheLib" src="https://em-content.zobj.net/thumbs/160/microsoft/319/shopping-cart_1f6d2.png">
+  <img width="160" height="160" alt="CacheLib" src="images/icon-160.png">
 </p>
 <h1 align="center"> SCH - Steam Cart Helper - Chromium Extension </h1>
 <p align="left">

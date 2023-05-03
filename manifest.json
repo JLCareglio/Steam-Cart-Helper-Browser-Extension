@@ -25,14 +25,20 @@
     },
     {
       "matches": ["https://store.steampowered.com/cart*"],
-      "js": ["scripts/cartManager.js"]
+      "js": ["scripts/cartManager.js"],
+      "run_at": "document_start"
     },
     {
       "matches": [
         "https://steamcommunity.com/profiles/*/friends*sch=1*",
         "https://steamcommunity.com/id/*/friends*sch=1*"
       ],
-      "js": ["scripts/saveUserGames.js"],
+      "js": ["scripts/friendsManager.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://steamcommunity.com/login*sch=1*"],
+      "js": ["scripts/connect.js"],
       "run_at": "document_start"
     }
   ]

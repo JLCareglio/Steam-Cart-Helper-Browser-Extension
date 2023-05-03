@@ -63,7 +63,7 @@
           savedPurchaseIdLists = [...newLists, ...notInLists];
           button.innerHTML = "💾 guardar";
         }
-        chrome.storage.local.set({ savedPurchaseIdLists }, () => {});
+        chrome.storage.local.set({ savedPurchaseIdLists });
       });
     }
   });

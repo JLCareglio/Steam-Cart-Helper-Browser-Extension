@@ -3,14 +3,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   leftCol.className = "leftcol";
   leftCol.style.display = "flex";
   leftCol.style.flexWrap = "wrap";
+  leftCol.style.alignItems = "center";
   document.querySelector(".leftcol").style.marginTop = "2px";
   document.querySelector(".leftcol").parentNode.prepend(leftCol);
   const cartItemList = document.querySelector(".cart_item_list");
 
   const users = (await chrome.storage.local.get("savedUsers")).savedUsers || [];
+  const savedPurchaseIdLists = (
+    await chrome.storage.local.get("savedPurchaseIdLists")
+  ).savedPurchaseIdLists || [
+    { listName: "Lista por Defecto", purchaseIds: [] },
+  ];
 
   const btnAddGamesToCart = document.createElement("button");
-  btnAddGamesToCart.innerHTML = "➕ agregar guardados";
+  btnAddGamesToCart.innerHTML = "➕ cargar";
   btnAddGamesToCart.classList.add("btn_black");
   btnAddGamesToCart.style.height = "29px";
   btnAddGamesToCart.style.margin = "2px";
@@ -83,31 +89,34 @@ document.addEventListener("DOMContentLoaded", async () => {
   // });
 
   const btnDelSaveGames = document.createElement("button");
-  btnDelSaveGames.innerHTML = "🗑️ eliminar guardados";
+  btnDelSaveGames.innerHTML = "🗑️ eliminar todas las listas ⚠️";
   btnDelSaveGames.classList.add("btn_black");
   btnDelSaveGames.style.height = "29px";
   btnDelSaveGames.style.margin = "2px";
   btnDelSaveGames.style.padding = "0 4px";
   btnDelSaveGames.addEventListener("click", () => {
-    // chrome.storage.local.remove("savedPurchaseIdLists");
     chrome.storage.local.get("savedPurchaseIdLists", (res) => {
       let savedPurchaseIdLists = res.savedPurchaseIdLists || [
         { listName: "Lista por Defecto", purchaseIds: [] },
       ];
       savedPurchaseIdLists[0].purchaseIds = [];
-      chrome.storage.local.set({ savedPurchaseIdLists }, () => {});
+      chrome.storage.local.set({ savedPurchaseIdLists });
+      alert(
+        "Todas las listas fueron borradas\n\n🚧función en desarrollo🚧\nEn futuras versiones se podrán administrar los datos en las listas"
+      );
     });
   });
 
   const inputFilterByUser = document.createElement("input");
   inputFilterByUser.classList.add("btn_black");
   inputFilterByUser.style.height = "29px";
+  inputFilterByUser.style.width = "144px";
   inputFilterByUser.style.margin = "2px";
   inputFilterByUser.style.padding = "0 4px";
   inputFilterByUser.setAttribute("type", "search");
   inputFilterByUser.setAttribute("id", "inputFilterByUser");
   inputFilterByUser.setAttribute("list", "options");
-  inputFilterByUser.placeholder = "🎁 comprar para: mi";
+  inputFilterByUser.placeholder = "🎁 comprar para:";
   inputFilterByUser.addEventListener("click", (e) => (e.target.value = ""));
   const datalist = document.createElement("datalist");
   datalist.setAttribute("id", "options");
@@ -119,8 +128,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   inputFilterByUser.appendChild(datalist);
 
+  const selectLists = document.createElement("select");
+  selectLists.classList.add("btn_black");
+  selectLists.style.height = "29px";
+  selectLists.style.margin = "2px";
+  selectLists.style.padding = "0 4px";
+  const option = document.createElement("option");
+  option.value = "Lista por Defecto";
+  option.innerText = "cargar desde:";
+  selectLists.appendChild(option);
+  savedPurchaseIdLists.forEach((list) => {
+    const option = document.createElement("option");
+    option.value = list.listName;
+    option.innerText = list.listName;
+    selectLists.appendChild(option);
+  });
+
   leftCol.prepend(btnDelSaveGames);
   leftCol.prepend(btnAddGamesToCart);
+  leftCol.prepend(selectLists);
   leftCol.prepend(inputFilterByUser);
 
   const MyAddToCart = (request) => {

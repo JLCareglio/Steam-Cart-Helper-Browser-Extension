@@ -1,5 +1,5 @@
 document.documentElement.style.display = "none";
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
   const node = document.getElementById("friends_list");
   const tileBar = node.querySelector(".profile_friends.title_bar");
   const searchBarContainer = node.querySelector(".searchBarContainer");
@@ -40,8 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.documentElement.style.display = "block";
 
-  chrome.storage.local.get("savedUsers", (result) => {
-    let users = result.savedUsers || [];
+  chrome.storage.local.get(["savedUsers", "userInfo"], (r) => {
+    let userInfo = r.userInfo;
+    let users = r.savedUsers || [];
     console.log("Usuarios actualmente guardados:");
     console.log(users);
     let searchResults = document.querySelectorAll(
