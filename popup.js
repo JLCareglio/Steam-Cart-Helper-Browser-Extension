@@ -1,7 +1,5 @@
-function closeWindow(myWindow) {
-  console.log("AA");
-  myWindow.close();
-}
+const baseUrl = "https://steamcommunity.com/";
+const loginUrl = baseUrl + "login/";
 
 (async () => {
   const btn = {
@@ -14,6 +12,7 @@ function closeWindow(myWindow) {
     export: document.getElementById("btn-export"),
     settings: document.getElementById("btn-settings"),
   };
+
   Object.values(btn).forEach((btn) => {
     if (btn.classList.contains("btn-error"))
       btn.onclick = () =>
@@ -23,18 +22,14 @@ function closeWindow(myWindow) {
   });
 
   btn.cart.onclick = () => window.open("https://store.steampowered.com/cart");
-  document.getElementById("user-name").onclick = () =>
-    window.open("https://steamcommunity.com/login");
-  document.getElementById("user-img").onclick = () =>
-    window.open("https://steamcommunity.com/login");
+  document.getElementById("user-name").onclick = () => window.open(loginUrl);
+  document.getElementById("user-img").onclick = () => window.open(loginUrl);
   document.getElementById("user-img").style.pointerEvents = "none";
 
   let userInfo = (await chrome.storage.local.get("userInfo")).userInfo;
   if (userInfo) {
     btn.friends.onclick = () =>
-      window.open(
-        `https://steamcommunity.com/profiles/${userInfo.steamid}/friends?sch=1`
-      );
+      window.open(`${baseUrl}profiles/${userInfo.steamid}/friends?sch=1`);
 
     document.getElementById("user-img").src = userInfo.img;
     document.getElementById("user-img").style.pointerEvents = "auto";
@@ -54,11 +49,9 @@ function closeWindow(myWindow) {
     btn.connection.classList.remove("btn-error");
     btn.connection.innerText = "conectando...";
     if (!(await tryConnect())) {
-      const loginUrl =
-        "https://steamcommunity.com/login/home/?goto=login&sch=1";
       btn.connection.innerText = "en espera";
       const loginWindow = window.open(
-        loginUrl,
+        `${loginUrl}home/?goto=login&sch=1`,
         "conectando...",
         "width=500, height=400"
       );
@@ -91,26 +84,22 @@ function closeWindow(myWindow) {
 
     async function tryConnect() {
       try {
-        const html = await fetch(`https://steamcommunity.com/`).then((resp) =>
-          resp.text()
-        );
+        const html = await fetch(baseUrl).then((resp) => resp.text());
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, "text/html");
+        console.log(baseUrl, doc);
         userInfo = JSON.parse(
           doc.querySelector("#webui_config").dataset.userinfo
         );
-        console.log(userInfo);
         const actionMenu = doc.getElementById("global_actions");
         userInfo.name = actionMenu
           .querySelector("#account_pulldown")
           .innerText.replace(/[\n\t]/g, "");
         userInfo.img = actionMenu.querySelector(".user_avatar img").src;
         // const miniProfile = userInfo.accountid;
-        console.log(userInfo);
+        console.log("userInfo", userInfo);
         btn.friends.addEventListener("click", () =>
-          window.open(
-            `https://steamcommunity.com/profiles/${userInfo.steamid}/friends?sch=1`
-          )
+          window.open(`${baseUrl}profiles/${userInfo.steamid}/friends?sch=1`)
         );
         document.getElementById("user-img").src = userInfo.img;
         document.getElementById("user-img").style.pointerEvents = "auto";
