@@ -1,17 +1,15 @@
-document.addEventListener("DOMContentLoaded", async () => {
-  const leftCol = document.createElement("div");
-  leftCol.className = "leftcol";
-  leftCol.style.display = "flex";
-  leftCol.style.flexWrap = "wrap";
-  leftCol.style.alignItems = "center";
-  document.querySelector(".leftcol").style.marginTop = "2px";
-  document.querySelector(".leftcol").parentNode.prepend(leftCol);
-  const cartItemList = document.querySelector(".cart_item_list");
+const leftCol = document.createElement("div");
+leftCol.className = "leftcol";
+leftCol.style.display = "flex";
+leftCol.style.flexWrap = "wrap";
+leftCol.style.alignItems = "center";
+document.querySelector(".leftcol").style.marginTop = "2px";
+document.querySelector(".leftcol").parentNode.prepend(leftCol);
+const cartItemList = document.querySelector(".cart_item_list");
 
-  const users = (await chrome.storage.local.get("savedUsers")).savedUsers || [];
-  const savedPurchaseIdLists = (
-    await chrome.storage.local.get("savedPurchaseIdLists")
-  ).savedPurchaseIdLists || [
+chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
+  let userInfo = resp.userInfo;
+  let savedPurchaseIdLists = resp.savedPurchaseIdLists || [
     { listName: "Lista por Defecto", purchaseIds: [] },
   ];
 
@@ -22,63 +20,106 @@ document.addEventListener("DOMContentLoaded", async () => {
   btnAddGamesToCart.style.margin = "2px";
   btnAddGamesToCart.style.padding = "0 4px";
   btnAddGamesToCart.addEventListener("click", async () => {
+    btnAddGamesToCart.style.pointerEvents = "none";
+    btnAddGamesToCart.innerText = "🕛 cargando...";
+    let i = 0;
+    const intervalLoading = setInterval(() => {
+      const loading = [
+        "🕛 cargando...",
+        "🕐 cargando...",
+        "🕑 cargando...",
+        "🕒 cargando...",
+        "🕓 cargando...",
+        "🕔 cargando...",
+        "🕕 cargando...",
+        "🕖 cargando...",
+        "🕗 cargando...",
+        "🕘 cargando...",
+        "🕙 cargando...",
+        "🕚 cargando...",
+      ];
+      btnAddGamesToCart.innerText = loading[i % loading.length];
+      i++;
+    }, 50);
+
     let savedPurchaseIdLists = (
       await chrome.storage.local.get("savedPurchaseIdLists")
     ).savedPurchaseIdLists || [
       { listName: "Lista por Defecto", purchaseIds: [] },
     ];
 
-    const savedPurchaseIds = savedPurchaseIdLists[0].purchaseIds;
-    console.log("savedPurchaseIds:");
+    const savedPurchaseIds =
+      savedPurchaseIdLists[selectLists.value].purchaseIds;
     console.log(savedPurchaseIds);
 
-    const userSelectedId = document.querySelector(
+    let userSelectedGames;
+    let userSelectedId = document.querySelector(
       '#options option[value="' +
         document.querySelector("#inputFilterByUser").value +
         '"]'
     )?.dataset.id;
+    if (userSelectedId) {
+      const promiseFetchGames = await new Promise((resolve) => {
+        chrome.runtime.sendMessage(
+          { query: "FetchGames", id: userSelectedId },
+          resolve
+        );
+      });
+      userSelectedGames = promiseFetchGames;
+    }
+
     const cartItems = Array.from(cartItemList.querySelectorAll(".cart_row"));
-    const user = users.find((user) => user.id == userSelectedId);
+    // const user = users.find((user) => user.id == userSelectedId);
     const savedPurchaseIdsFilter = savedPurchaseIds.filter((game) => {
       return (
         !cartItems.some(
           (cartItem) => cartItem.dataset.dsAppid == game.gameId
-        ) && !user?.games?.some((userGame) => userGame.appid == game.gameId)
+        ) &&
+        !userSelectedGames?.some((userGame) => userGame.appid == game.gameId)
       );
     });
     console.log("juegos ya filtrados:");
     console.log(savedPurchaseIdsFilter);
 
     let newCartItem = document.createElement("div");
-    let i = 1;
+    let j = 1;
 
     if (savedPurchaseIdsFilter.length) {
       for (const game of savedPurchaseIdsFilter) {
         newCartItem.innerHTML = `
-          <div class="cart_row even app_impression_tracked">
-            <div class="cart_item" style="text-align: center; display: flex; flex-direction: column; justify-content: space-evenly; font-size: 22px;">
-              <p>
-                👀 cargando ${i} de ${savedPurchaseIdsFilter.length}
-              </p>
-              <p>
-              🎮 ${game.name}
-              </p>
-            </div>
-          </div>`;
+              <div class="cart_row even app_impression_tracked">
+                <div class="cart_item" style="text-align: center; display: flex; flex-direction: column; justify-content: space-evenly; font-size: 22px;">
+                  <p>
+                    👀 cargando ${j} de ${savedPurchaseIdsFilter.length}
+                  </p>
+                  <p>
+                  🎮 ${game.name}
+                  </p>
+                </div>
+              </div>`;
 
         cartItemList.prepend(newCartItem);
         const resp = await MyAddToCart(game);
         console.log(resp);
-        i++;
+        j++;
       }
       newCartItem.innerHTML = `
-        <div class="cart_row even app_impression_tracked">
-          <p class="cart_item" style="display: flex; justify-content: center; align-items: center; font-size: 22px;">
-            ✅ recargando pagina...
-          </p>
-        </div>`;
+            <div class="cart_row even app_impression_tracked">
+              <p class="cart_item" style="display: flex; justify-content: center; align-items: center; font-size: 22px;">
+                ✅ recargando pagina...
+              </p>
+            </div>`;
       cartItemList.prepend(newCartItem);
+      clearInterval(intervalLoading);
+      btnAddGamesToCart.innerText = "✅ listo";
       window.location.reload();
+    } else {
+      clearInterval(intervalLoading);
+      btnAddGamesToCart.innerText = "✅ sin cambios";
+      setTimeout(() => {
+        btnAddGamesToCart.innerText = "➕ cargar";
+        btnAddGamesToCart.style.pointerEvents = "auto";
+      }, 700);
     }
   });
   // btnAddGamesToCart.addEventListener("click", async () => {
@@ -120,12 +161,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   inputFilterByUser.addEventListener("click", (e) => (e.target.value = ""));
   const datalist = document.createElement("datalist");
   datalist.setAttribute("id", "options");
-  users.forEach((user) => {
+  if (userInfo) {
     const option = document.createElement("option");
-    option.value = user.userName;
-    option.dataset.id = user.id;
+    option.value = `mí (${userInfo.name})`;
+    option.dataset.id = userInfo.steamid;
     datalist.appendChild(option);
-  });
+    userInfo.friends.forEach((user) => {
+      const option = document.createElement("option");
+      option.value = user.userName;
+      option.dataset.id = user.id;
+      datalist.appendChild(option);
+    });
+  } else inputFilterByUser.disabled = true;
   inputFilterByUser.appendChild(datalist);
 
   const selectLists = document.createElement("select");
@@ -134,12 +181,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   selectLists.style.margin = "2px";
   selectLists.style.padding = "0 4px";
   const option = document.createElement("option");
-  option.value = "Lista por Defecto";
+  option.value = "0";
   option.innerText = "cargar desde:";
   selectLists.appendChild(option);
-  savedPurchaseIdLists.forEach((list) => {
+  savedPurchaseIdLists.forEach((list, index) => {
     const option = document.createElement("option");
-    option.value = list.listName;
+    option.value = index;
     option.innerText = list.listName;
     selectLists.appendChild(option);
   });
