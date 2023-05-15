@@ -7,26 +7,25 @@
 
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   if (!sender || !sender.tab || !("query" in request)) return false;
-  if (request.query === "FetchGames") return FetchGames(request, callback);
-  // switch (request.query) {
-  //   case "FetchGames":
-  //     return FetchGames(request, callback);
-  // }
+  if (request.query === "FetchGames") {
+    FetchGames(request.id)
+      .then((games) => callback(games))
+      .catch((error) => callback(null));
+    return true;
+  }
   return false;
 });
 
-function FetchGames(request, callback) {
-  fetch(`https://steamcommunity.com/profiles/${request.id}/games/?tab=all`)
+//
+
+function FetchGames(id) {
+  return fetch(`https://steamcommunity.com/profiles/${id}/games/?tab=all`)
     .then((resp) => resp.text())
     .then((html) => {
       let data = JSON.parse(
         html.match(/data-profile-gameslist="(.+?)"/)[1].replace(/&quot;/g, '"')
       );
-      // const userName = data.strProfileName;
-      // const userID = data.strSteamId;
-      const games = data.rgGames;
-      callback(games);
-      return true;
-    })
-    .catch((e) => false);
+      // console.log(data);
+      return data.rgGames;
+    });
 }

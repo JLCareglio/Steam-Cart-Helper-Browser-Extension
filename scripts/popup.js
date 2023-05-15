@@ -127,9 +127,11 @@ const parser = new DOMParser();
   }
   async function UpdateFriends() {
     btn.friends.disabled = true;
+    btn.friends.style.width = btn.friends.offsetWidth + "px";
     btn.friends.innerHTML = `
-      <span style="font-size: 22px">⌛</span>
-      <span>actualizando</span>`;
+      <span style="font-size: 11px">⌛</span>
+      <span>actua-</span>
+      <span>lizando</span>`;
 
     html = await fetch(`${baseUrl}profiles/${userInfo.steamid}/friends`).then(
       (resp) => resp.text()
