@@ -16,8 +16,6 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
   return false;
 });
 
-//
-
 function FetchGames(id) {
   return fetch(`https://steamcommunity.com/profiles/${id}/games/?tab=all`)
     .then((resp) => resp.text())
