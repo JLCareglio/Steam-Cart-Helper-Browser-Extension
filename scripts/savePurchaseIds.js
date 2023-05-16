@@ -34,7 +34,12 @@
       button.style.padding = "0 4px";
       purchase.parentElement.after(button);
 
-      button.addEventListener("click", () => {
+      button.addEventListener("click", async () => {
+        savedPurchaseIdLists = (
+          await chrome.storage.local.get("savedPurchaseIdLists")
+        ).savedPurchaseIdLists || [
+          { listName: "Lista por Defecto", purchaseIds: [] },
+        ];
         const [inLists, notInLists] = savedPurchaseIdLists.reduce(
           ([inList, notInList], list) => {
             return list.purchaseIds.some((p) => p[typeId] == purchaseId)
