@@ -48,8 +48,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       { listName: "Lista por Defecto", purchaseIds: [] },
     ];
 
-    const savedPurchaseIds =
-      savedPurchaseIdLists[selectLists.value].purchaseIds;
+    const savedPurchaseIds = savedPurchaseIdLists[0].purchaseIds;
     console.log(savedPurchaseIds);
 
     let userSelectedGames;
@@ -129,25 +128,6 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   //   window.location.reload();
   // });
 
-  const btnDelSaveGames = document.createElement("button");
-  btnDelSaveGames.innerHTML = "🗑️ eliminar todas las listas ⚠️";
-  btnDelSaveGames.classList.add("btn_black");
-  btnDelSaveGames.style.height = "29px";
-  btnDelSaveGames.style.margin = "2px";
-  btnDelSaveGames.style.padding = "0 4px";
-  btnDelSaveGames.addEventListener("click", () => {
-    chrome.storage.local.get("savedPurchaseIdLists", (res) => {
-      let savedPurchaseIdLists = res.savedPurchaseIdLists || [
-        { listName: "Lista por Defecto", purchaseIds: [] },
-      ];
-      savedPurchaseIdLists[0].purchaseIds = [];
-      chrome.storage.local.set({ savedPurchaseIdLists });
-      alert(
-        "Todas las listas fueron borradas\n\n🚧función en desarrollo🚧\nEn futuras versiones se podrán administrar los datos en las listas"
-      );
-    });
-  });
-
   const inputFilterByUser = document.createElement("input");
   inputFilterByUser.classList.add("btn_black");
   inputFilterByUser.style.height = "29px";
@@ -175,25 +155,24 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   } else inputFilterByUser.disabled = true;
   inputFilterByUser.appendChild(datalist);
 
-  const selectLists = document.createElement("select");
-  selectLists.classList.add("btn_black");
-  selectLists.style.height = "29px";
-  selectLists.style.margin = "2px";
-  selectLists.style.padding = "0 4px";
-  const option = document.createElement("option");
-  option.value = "0";
-  option.innerText = "cargar desde:";
-  selectLists.appendChild(option);
-  savedPurchaseIdLists.forEach((list, index) => {
-    const option = document.createElement("option");
-    option.value = index;
-    option.innerText = list.listName;
-    selectLists.appendChild(option);
-  });
+  // const selectLists = document.createElement("select");
+  // selectLists.classList.add("btn_black");
+  // selectLists.style.height = "29px";
+  // selectLists.style.margin = "2px";
+  // selectLists.style.padding = "0 4px";
+  // const option = document.createElement("option");
+  // option.value = "0";
+  // option.innerText = "cargar desde:";
+  // selectLists.appendChild(option);
+  // savedPurchaseIdLists.forEach((list, index) => {
+  //   const option = document.createElement("option");
+  //   option.value = index;
+  //   option.innerText = list.listName;
+  //   selectLists.appendChild(option);
+  // });
 
-  leftCol.prepend(btnDelSaveGames);
   leftCol.prepend(btnAddGamesToCart);
-  leftCol.prepend(selectLists);
+  // leftCol.prepend(selectLists);
   leftCol.prepend(inputFilterByUser);
 
   const MyAddToCart = (request) => {

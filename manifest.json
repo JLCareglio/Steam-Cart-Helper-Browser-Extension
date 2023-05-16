@@ -23,15 +23,15 @@
   "content_scripts": [
     {
       "matches": ["https://store.steampowered.com/app/*"],
-      "js": ["scripts/savePurchaseIds.js"]
+      "js": ["scripts/savePurchaseIds_inject.js"]
     },
     {
       "matches": ["https://store.steampowered.com/cart*"],
-      "js": ["scripts/cartManager.js"]
+      "js": ["scripts/cartManager_inject.js"]
     },
     {
       "matches": ["https://steamcommunity.com/login*sch=1*"],
-      "js": ["scripts/connectPopup.js"],
+      "js": ["scripts/connectPopup_inject.js"],
       "run_at": "document_start"
     }
   ]

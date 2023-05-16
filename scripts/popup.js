@@ -7,6 +7,7 @@ const parser = new DOMParser();
     cart: document.getElementById("btn-cart"),
     connection: document.getElementById("btn-connection"),
     friends: document.getElementById("btn-friends"),
+    saved: document.getElementById("btn-saved"),
     lists: document.getElementById("btn-lists"),
     help: document.getElementById("btn-help"),
     import: document.getElementById("btn-import"),
@@ -15,7 +16,7 @@ const parser = new DOMParser();
   };
 
   Object.values(btn).forEach((btn) => {
-    if (btn.classList.contains("btn-error"))
+    if (btn?.classList.contains("btn-error"))
       btn.onclick = () =>
         alert(
           "🚧funcionalidad en desarrollo🚧\nEstará disponible en futuras versiones"
@@ -23,6 +24,9 @@ const parser = new DOMParser();
   });
 
   btn.cart.onclick = () => window.open("https://store.steampowered.com/cart");
+  btn.saved.onclick = () => (window.location.href = "saved.html");
+  // btn.lists.onclick = () => window.location.href = "lists.html"
+
   document.getElementById("user-name").onclick = () => window.open(loginUrl);
   document.getElementById("user-img").onclick = () => window.open(loginUrl);
   document.getElementById("user-img").style.pointerEvents = "none";
@@ -163,18 +167,14 @@ const parser = new DOMParser();
     } catch (error) {
       console.error(error);
     }
-    btn.friends.disabled = false;
     btn.friends.innerHTML = `
-    <span style="font-size: 22px">🎁</span>
-    <span>amigos</span>`;
+    <span style="font-size: 22px">✅</span>
+    <span>listo</span>`;
+    setTimeout(() => {
+      btn.friends.innerHTML = `
+      <span style="font-size: 22px">🎁</span>
+      <span>amigos</span>`;
+      btn.friends.disabled = false;
+    }, 700);
   }
 })();
-
-// Ejemplo para obtener lista de amigos de 76561199236658330
-// const resp = await fetch(
-//   "https://steamcommunity.com/profiles/76561199236658330/friends/"
-// );
-// const html = await resp.text();
-// const parser = new DOMParser();
-// const doc = parser.parseFromString(html, "text/html");
-// doc.querySelectorAll(".selectable.friend_block_v2.persona");

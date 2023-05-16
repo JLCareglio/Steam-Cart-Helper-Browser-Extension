@@ -1,0 +1,98 @@
+body {
+  background-color: var(--on-primary);
+  color: var(--on-background);
+  width: 300px;
+  text-align: center;
+  margin: 0;
+}
+
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 288px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 32px;
+  padding: 6px;
+  background-color: var(--on-tertiary);
+  color: var(--on-tertiary-container);
+}
+
+.title {
+  text-align: center;
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
+}
+
+button {
+  user-select: none;
+  background-color: var(--on-tertiary);
+  color: var(--on-primary-container);
+  border: 1px solid var(--tertiary-container);
+  padding: 6px;
+  margin: 4px;
+  border-radius: var(--shape-corner);
+  cursor: pointer;
+}
+button:hover {
+  border: 1px solid var(--tertiary);
+}
+
+body::-webkit-scrollbar {
+  width: 8px;
+}
+body::-webkit-scrollbar-track {
+  background-color: var(--background);
+}
+body::-webkit-scrollbar-thumb {
+  background-color: var(--on-secondary);
+  border-radius: 4px;
+}
+body::-webkit-scrollbar-button {
+  display: none;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  margin-top: 44px;
+}
+
+li {
+  margin-bottom: 1px;
+  background-color: var(--primary-container);
+  color: var(--on-primary-container);
+  border: 1px solid var(--primary-container);
+  padding: 0px;
+  display: flex;
+  align-items: center;
+  text-align: left;
+}
+
+li:hover {
+  border: 1px solid var(--primary);
+  cursor: pointer;
+}
+
+button.btn-delete {
+  padding: 0;
+  margin: 0;
+  margin-right: 4px;
+  background-color: var(--on-tertiary);
+  border: 1px solid var(--on-tertiary);
+  border-radius: 2px;
+  font-size: 18px;
+  height: 34px;
+  /* border: none;
+  background-color: transparent;
+  cursor: pointer; */
+}
+
+button.btn-delete:hover {
+  background-color: var(--tertiary-container);
+  border: 1px solid var(--tertiary-container);
+}
