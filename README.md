@@ -13,7 +13,7 @@
 
 - [📝 Índice](#índice)
 - [ℹ️ Descripción](#descripción)
-- [👀 Ejemplo de Uso](#ejemplo-de-uso)
+- [👀 Capturas de Pantalla](#capturas-de-pantalla)
 - [🧑‍💻 Contribuye programando](#contribuye-programando)
 
 ## Descripción
@@ -29,9 +29,11 @@
   </ul>
 </p>
 
-## Ejemplo de Uso
+## Capturas de Pantalla
 
-🚧 Sección en construcción
+![screenshot_popup](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/11d36bb1-8977-474c-b567-7b8b054c9c04)
+![screenshot_store](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/0fc84a60-5688-44ea-82f2-72834cd3c6dd)
+![screenshot_cart](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/c92e1100-f077-46aa-91a1-3f84be28c34c)
 
 ## Contribuye programando
 
