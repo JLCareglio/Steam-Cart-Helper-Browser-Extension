@@ -29,9 +29,9 @@
 
 ## Capturas de Pantalla
 
-![screenshot_popup](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/11d36bb1-8977-474c-b567-7b8b054c9c04)
-![screenshot_store](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/0fc84a60-5688-44ea-82f2-72834cd3c6dd)
-![screenshot_cart](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/c92e1100-f077-46aa-91a1-3f84be28c34c)
+![screenshot_popup](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/9fc0759f-5f45-4b5e-aa69-4b7f2a1e6e7d)
+![screenshot_store](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/42003972-fa72-4066-b0af-b1ad1bcbecd7)
+![screenshot_cart](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/87b71f28-f5b4-429f-a2e8-191c3960902e)
 
 ## Contribuye programando
 
