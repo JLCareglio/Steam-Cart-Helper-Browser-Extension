@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function () {
   });
 
   if (!listContainer.children.length)
-    listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">sin juegos</h1>`;
+    listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">sin juegos guardados</h1>`;
 
   function RemoveGame(game) {
     const id = game.subid ?? game.bundleid;
@@ -43,7 +43,11 @@ document.addEventListener("DOMContentLoaded", async function () {
         (game) => (game.subid ?? game.bundleid) !== id
       );
     chrome.storage.local.set({ savedPurchaseIdLists });
-    if (!listContainer.children.length)
-      listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">sin juegos</h1>`;
+    if (!listContainer.children.length) {
+      listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">✅ listo</h1>`;
+      setTimeout(() => {
+        listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">sin juegos guardados</h1>`;
+      }, 700);
+    }
   }
 });
