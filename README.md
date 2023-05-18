@@ -1,7 +1,7 @@
 <p align="center">
   <img width="160" height="160" alt="CacheLib" src="images/icon-160.png">
 </p>
-<h1 align="center"> SCH - Steam Cart Helper - Chromium Extension </h1>
+<h1 align="center"> SCH - Steam Cart Helper</h1>
 <p align="left">
   <img src="https://img.shields.io/badge/license-MIT-blue">
   <img src="https://img.shields.io/badge/status-in%20development-yellow">
