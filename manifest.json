@@ -1,8 +1,10 @@
 {
   "manifest_version": 3,
   "name": "Steam Cart Helper",
-  "version": "1.0",
+  "short_name": "SCH",
+  "version": "0.7",
   "description": "🛒 Extensión que te ayuda a ahorrar tiempo agregando funcionalidades al carrito de compras de Steam",
+  "short_description": "🛒 Añade funcionalidades al carrito de compras de Steam",
   "homepage_url": "https://github.com/JLCareglio/Steam-Cart-Helper-chromium-extension",
   "icons": {
     "16": "images/icon-16.png",
