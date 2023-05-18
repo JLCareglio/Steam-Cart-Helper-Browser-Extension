@@ -4,8 +4,6 @@
 <h1 align="center"> SCH - Steam Cart Helper</h1>
 <p align="left">
   <img src="https://img.shields.io/badge/license-MIT-blue">
-  <img src="https://img.shields.io/badge/status-in%20development-yellow">
-  <br>
   <img src="https://img.shields.io/github/stars/JLCareglio?style=social">
 </p>
 
