@@ -7,14 +7,28 @@ document.querySelector(".leftcol").style.marginTop = "2px";
 document.querySelector(".leftcol").parentNode.prepend(leftCol);
 const cartItemList = document.querySelector(".cart_item_list");
 
+let currentUserName = document.querySelector("#account_pulldown")?.innerText;
+let currentUserId =
+  document
+    .querySelector("#global_actions .user_avatar")
+    ?.href.match(/(\d+)/g)
+    ?.shift() ??
+  document
+    .querySelector("#global_actions .user_avatar")
+    ?.href.match(/\/id\/([^/]+)/)
+    ?.at(-1);
+
 chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   let userInfo = resp.userInfo;
-  let savedPurchaseIdLists = resp.savedPurchaseIdLists || [
-    { listName: "Lista por Defecto", purchaseIds: [] },
-  ];
-
+  // let savedPurchaseIdLists = resp.savedPurchaseIdLists || [
+  //   { listName: "Lista por Defecto", purchaseIds: [] },
+  // ];
   const btnAddGamesToCart = document.createElement("button");
-  btnAddGamesToCart.innerHTML = "➕ cargar";
+  const inputFilterByUser = document.createElement("input");
+  const inputFilterByUser_datalist = document.createElement("datalist");
+  // const selectLists = document.createElement("select");
+
+  btnAddGamesToCart.innerText = "➕ cargar";
   btnAddGamesToCart.classList.add("btn_black");
   btnAddGamesToCart.style.height = "29px";
   btnAddGamesToCart.style.margin = "2px";
@@ -49,26 +63,21 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     ];
 
     const savedPurchaseIds = savedPurchaseIdLists[0].purchaseIds;
-    console.log(savedPurchaseIds);
 
     let userSelectedGames;
     let userSelectedId = document.querySelector(
-      '#options option[value="' +
-        document.querySelector("#inputFilterByUser").value +
-        '"]'
+      '#users_datalist option[value="' + inputFilterByUser.value + '"]'
     )?.dataset.id;
     if (userSelectedId) {
-      const promiseFetchGames = await new Promise((resolve) => {
+      userSelectedGames = await new Promise((resolve) => {
         chrome.runtime.sendMessage(
           { query: "FetchGames", id: userSelectedId },
           resolve
         );
       });
-      userSelectedGames = promiseFetchGames;
     }
 
     const cartItems = Array.from(cartItemList.querySelectorAll(".cart_row"));
-    // const user = users.find((user) => user.id == userSelectedId);
     const savedPurchaseIdsFilter = savedPurchaseIds.filter((game) => {
       return (
         !cartItems.some(
@@ -121,41 +130,59 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       }, 700);
     }
   });
-  // btnAddGamesToCart.addEventListener("click", async () => {
-  //   const savedPurchaseIds = JSON.parse(localStorage.getItem("savedPurchaseIds"));
-  //   const promises = savedPurchaseIds.map((juego) => myAddToCart(juego));
-  //   await Promise.all(promises);
-  //   window.location.reload();
-  // });
 
-  const inputFilterByUser = document.createElement("input");
+  inputFilterByUser_datalist.id = "users_datalist";
+  inputFilterByUser.type = "search";
+  inputFilterByUser.setAttribute("list", "users_datalist");
+  inputFilterByUser.appendChild(inputFilterByUser_datalist);
+  inputFilterByUser.placeholder = "🎁 comprar para:";
   inputFilterByUser.classList.add("btn_black");
   inputFilterByUser.style.height = "29px";
-  inputFilterByUser.style.width = "144px";
+  // inputFilterByUser.style.width = "144px";
   inputFilterByUser.style.margin = "2px";
   inputFilterByUser.style.padding = "0 4px";
-  inputFilterByUser.setAttribute("type", "search");
-  inputFilterByUser.setAttribute("id", "inputFilterByUser");
-  inputFilterByUser.setAttribute("list", "options");
-  inputFilterByUser.placeholder = "🎁 comprar para:";
-  inputFilterByUser.addEventListener("click", (e) => (e.target.value = ""));
-  const datalist = document.createElement("datalist");
-  datalist.setAttribute("id", "options");
-  if (userInfo) {
-    const option = document.createElement("option");
-    option.value = `mí (${userInfo.name})`;
-    option.dataset.id = userInfo.steamid;
-    datalist.appendChild(option);
-    userInfo.friends.forEach((user) => {
-      const option = document.createElement("option");
-      option.value = user.userName;
-      option.dataset.id = user.id;
-      datalist.appendChild(option);
-    });
-  } else inputFilterByUser.disabled = true;
-  inputFilterByUser.appendChild(datalist);
+  inputFilterByUser.addEventListener("click", (e) => {
+    if (e.target.value != "") {
+      e.target.value = "";
+      // inputFilterByUser.setAttribute("list", "");
+      // inputFilterByUser.setAttribute("list", "users_datalist");
+      // e.target.blur();
+      // e.target.focus();
+    }
+  });
+  inputFilterByUser.addEventListener("change", (e) => {
+    const userSelectedId = document.querySelector(
+      '#users_datalist option[value="' + inputFilterByUser.value + '"]'
+    )?.dataset.id;
+    if (userSelectedId === "updateFriends") {
+      inputFilterByUser.value = "";
+      UpdateFriends();
+    }
+  });
+  if (currentUserId) {
+    const optionSelf = document.createElement("option");
+    optionSelf.value = `mí (${currentUserName})`;
+    optionSelf.dataset.id = currentUserId;
+    inputFilterByUser_datalist.appendChild(optionSelf);
+    const optionUpdate = document.createElement("option");
+    optionUpdate.value = `actualizar amigos`;
+    optionUpdate.dataset.id = "updateFriends";
+    inputFilterByUser_datalist.appendChild(optionUpdate);
+    if (currentUserId === userInfo?.steamid) {
+      userInfo.friends.forEach((user) => {
+        const option = document.createElement("option");
+        option.value = user.userName;
+        option.dataset.id = user.id;
+        inputFilterByUser_datalist.appendChild(option);
+      });
+    } else {
+      userInfo = { steamid: currentUserId, name: currentUserName };
+      UpdateFriends();
+    }
+  } else {
+    inputFilterByUser.style.display = "none";
+  }
 
-  // const selectLists = document.createElement("select");
   // selectLists.classList.add("btn_black");
   // selectLists.style.height = "29px";
   // selectLists.style.margin = "2px";
@@ -175,6 +202,58 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   // leftCol.prepend(selectLists);
   leftCol.prepend(inputFilterByUser);
 
+  async function UpdateFriends() {
+    console.log("Actualizando Amigos");
+    inputFilterByUser.disabled = true;
+    inputFilterByUser.placeholder = "cargando amigos...";
+    while (inputFilterByUser_datalist.childNodes.length > 2) {
+      inputFilterByUser_datalist.removeChild(
+        inputFilterByUser_datalist.lastChild
+      );
+    }
+    let friendsHTML = await new Promise((resolve) => {
+      chrome.runtime.sendMessage(
+        { query: "FetchFriendsHTML", id: currentUserId },
+        resolve
+      );
+    });
+    const doc = new DOMParser().parseFromString(friendsHTML, "text/html");
+    try {
+      const friendsHtml = doc.querySelectorAll(
+        ".selectable.friend_block_v2.persona"
+      );
+      userInfo.friends = [];
+
+      for (let friend of friendsHtml) {
+        let friendId = friend.dataset.steamid;
+        let friendMiniProfile = friend.dataset.miniprofile;
+        let friendImg = friend.querySelector("img").src;
+        let friendName = friend
+          .querySelector(".friend_block_content")
+          .textContent.trim()
+          .split("\n")[0];
+
+        userInfo.friends.push({
+          id: friendId,
+          userName: friendName,
+          miniProfile: friendMiniProfile,
+          img: friendImg,
+        });
+
+        const option = document.createElement("option");
+        option.value = friendName;
+        option.dataset.id = friendId;
+        inputFilterByUser_datalist.appendChild(option);
+      }
+      inputFilterByUser.placeholder = "🎁 comprar para:";
+      inputFilterByUser.disabled = false;
+      chrome.storage.local.set({ userInfo });
+    } catch (error) {
+      inputFilterByUser.placeholder = "❌ ERROR";
+      console.error(error);
+    }
+    console.log("Amigos Actualizados");
+  }
   const MyAddToCart = (request) => {
     const g_sessionID = document.querySelector("[name='sessionid']").value;
     const formData = new FormData();

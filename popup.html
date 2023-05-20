@@ -3,67 +3,17 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SCH</title>
-    <link rel="stylesheet" href="styles/global.css" />
-    <link rel="stylesheet" href="styles/popup.css" />
+    <title>SCH-listas</title>
+    <link rel="stylesheet" type="text/css" href="styles/global.css" />
+    <link rel="stylesheet" type="text/css" href="styles/popup.css" />
   </head>
   <body>
     <header>
-      <a
-        class="logo"
-        href="https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension#readme"
-        target="_blank"
-      >
-        <img src="images/icon-32.png" alt="Logo" />
-        <span class="logo-name">Stem Cart Helper</span>
-      </a>
-      <div class="user-info">
-        <div>
-          <div id="user-name"></div>
-          <button id="btn-connection">conectar</button>
-        </div>
-        <img
-          width="32"
-          id="user-img"
-          src="images/no-avatar.jpg"
-          alt="Avatar de Usuario"
-        />
-      </div>
+      <!-- <button id="btn-back">👈 atras</button> -->
+      <h1 class="title">💾 juegos guardados</h1>
+      <button id="btn-removeAll">🗑️ eliminar todo</button>
     </header>
-    <div class="buttons-container">
-      <button id="btn-cart">
-        <span style="font-size: 22px">🛒</span>
-        <span>carrito</span>
-      </button>
-      <button id="btn-saved">
-        <span style="font-size: 22px">💾</span>
-        <span>juegos</span>
-      </button>
-      <!-- <button id="btn-friends" disabled>
-        <span style="font-size: 22px">🎁</span>
-        <span>amigos</span>
-      </button>
-      <button id="btn-lists">
-        <span style="font-size: 22px">📝</span>
-        <span>listas</span>
-      </button>
-      <button class="btn-error" id="btn-help">
-        <span style="font-size: 22px">❔</span>
-        <span>ayuda</span>
-      </button> -->
-      <button id="btn-export">
-        <span style="font-size: 22px">⬇️</span>
-        <span>exportar</span>
-      </button>
-      <button id="btn-import">
-        <span style="font-size: 22px">⬆️</span>
-        <span>importar</span>
-      </button>
-      <!-- <button class="btn-error" id="btn-settings">
-        <span style="font-size: 22px">⚙️</span>
-        <span>ajustes</span>
-      </button> -->
-    </div>
+    <ul id="list-container"></ul>
     <script src="scripts/popup.js"></script>
   </body>
 </html>
