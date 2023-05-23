@@ -32,7 +32,7 @@ function FetchGames(request, callback) {
       );
       callback(data.rgGames);
     })
-    .catch((error) => callback(null));
+    .catch((error) => callback(error.message));
 }
 
 function FetchFriendsHTML(request, callback) {

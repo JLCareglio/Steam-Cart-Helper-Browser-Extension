@@ -1,6 +1,6 @@
 (async () => {
   const url = window.location.href;
-  const gameId = url.split("/app/")[1].split("/")[0];
+  let gameId = parseInt(url.split("/app/")[1].split("/")[0]);
   const subIds = document.querySelectorAll('[name="subid"]');
   const bundleIds = document.querySelectorAll('[name="bundleid"]');
   let savedPurchaseIdLists = (
@@ -14,8 +14,8 @@
     const purchaseId = purchase.value;
     if (purchase.value) {
       const typeId = purchase.name;
-      const name = purchase
-        .closest(".game_area_purchase_game_wrapper")
+      const gameE = purchase.closest(".game_area_purchase_game_wrapper");
+      const name = gameE
         .querySelector("h1")
         .textContent.trim()
         .replace(/^(\w+\s)/, "")
@@ -49,10 +49,13 @@
           [[], []]
         );
         if (!inLists.length) {
+          let dsBundleData = JSON.parse(gameE.dataset.dsBundleData ?? null);
+          if (typeId === "bundleid") gameId = null;
           savedPurchaseIdLists[0].purchaseIds.push({
             gameId,
             [typeId]: purchaseId,
             name,
+            dsBundleData,
           });
           // button.innerHTML = "📝 Administrar";
           button.innerHTML = "🗑️ eliminar";

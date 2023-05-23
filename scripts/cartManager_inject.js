@@ -62,43 +62,129 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       { listName: "Lista por Defecto", purchaseIds: [] },
     ];
 
-    const savedPurchaseIds = savedPurchaseIdLists[0].purchaseIds;
-
+    let filteredSavedPurchaseIds = savedPurchaseIdLists[0].purchaseIds;
     let userSelectedGames;
     let userSelectedId = document.querySelector(
       '#users_datalist option[value="' + inputFilterByUser.value + '"]'
     )?.dataset.id;
-    if (userSelectedId) {
-      userSelectedGames = await new Promise((resolve) => {
-        chrome.runtime.sendMessage(
-          { query: "FetchGames", id: userSelectedId },
-          resolve
-        );
+
+    const cartItems = Array.from(
+      cartItemList.querySelectorAll(".cart_row")
+    ).map((item) => ({
+      ...item.dataset,
+      dsBundleData: JSON.parse(item.dataset.dsBundleData ?? null),
+    }));
+
+    console.log("cartItems", cartItems);
+    console.log("juegos sin filtrar:");
+    console.log(filteredSavedPurchaseIds);
+
+    if (cartItems.length) {
+      filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter((purchase) => {
+        const purchaseId = purchase.gameId ?? purchase.bundleid;
+        const savedGamesIds = purchase.dsBundleData?.m_rgItems.flatMap(
+          (ids) => ids.m_rgIncludedAppIDs
+        ) ?? [purchase.gameId];
+        return !cartItems.some((item) => {
+          const itemId = item.dsAppid ?? item.dsBundleid;
+          const itemGamesIds = item.dsBundleData?.m_rgItems.flatMap(
+            (ids) => ids.m_rgIncludedAppIDs
+          ) ?? [item.dsAppid];
+          return (
+            itemId == purchaseId ||
+            savedGamesIds.every((sId) => itemGamesIds.includes(sId))
+          );
+        });
       });
+      console.log("elementos en carro, juegos luego de filtro:");
+      console.log(filteredSavedPurchaseIds);
     }
 
-    const cartItems = Array.from(cartItemList.querySelectorAll(".cart_row"));
-    const savedPurchaseIdsFilter = savedPurchaseIds.filter((game) => {
-      return (
-        !cartItems.some(
-          (cartItem) => cartItem.dataset.dsAppid == game.gameId
-        ) &&
-        !userSelectedGames?.some((userGame) => userGame.appid == game.gameId)
-      );
+    if (userSelectedId && filteredSavedPurchaseIds.length) {
+      if (userSelectedId !== currentUserId) {
+        userSelectedGames = await new Promise((resolve) => {
+          chrome.runtime.sendMessage(
+            { query: "FetchGames", id: userSelectedId },
+            resolve
+          );
+        });
+        console.log("userSelectedGames:", userSelectedGames);
+        filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
+          (purchase) =>
+            !purchase.dsBundleData || !purchase.dsBundleData.m_bRestrictGifting
+        );
+        console.log("noSelf, juegos luego de quitar los 'no-regalo':");
+        console.log(filteredSavedPurchaseIds);
+
+        filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
+          (purchase) => {
+            const gameIds = purchase.dsBundleData?.m_rgItems.flatMap(
+              (ids) => ids.m_rgIncludedAppIDs
+            ) ?? [purchase.gameId];
+            return !userSelectedGames.some((userGame) =>
+              gameIds.includes(userGame.appid)
+            );
+          }
+        );
+        console.log("-userSelectedGames únicos, juegos luego de filtro:");
+        console.log(filteredSavedPurchaseIds);
+      } else {
+        userSelectedGames = await fetch(
+          "https://store.steampowered.com/dynamicstore/userdata/"
+        )
+          .then((res) => res.json())
+          .then((data) => data.rgOwnedApps);
+
+        console.log("userSelectedGames:", userSelectedGames);
+
+        filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
+          (purchase) => {
+            const gameIds = purchase.dsBundleData?.m_rgItems.flatMap(
+              (ids) => ids.m_rgIncludedAppIDs
+            ) ?? [purchase.gameId];
+            return !gameIds.every((id) => userSelectedGames.includes(id));
+          }
+        );
+        console.log("-userSelectedGames totales, juegos luego de filtro:");
+        console.log(filteredSavedPurchaseIds);
+      }
+    }
+
+    filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter((purchase1) => {
+      const gameIds1 = purchase1.dsBundleData?.m_rgItems.flatMap(
+        (ids) => ids.m_rgIncludedAppIDs
+      ) ?? [purchase1.gameId];
+      // console.log("gameIds1:", purchase1.name, gameIds1);
+      return !filteredSavedPurchaseIds.some((purchase2) => {
+        const gameIds2 = purchase2.dsBundleData?.m_rgItems.flatMap(
+          (ids) => ids.m_rgIncludedAppIDs
+        ) ?? [purchase2.gameId];
+        // console.log("gameIds2:", purchase2.name, gameIds2);
+        const sonDiferentes = purchase1 !== purchase2;
+        // console.log("sonDiferentes:", sonDiferentes);
+        if (sonDiferentes) {
+          const eval = gameIds1.every((id) => gameIds2.includes(id));
+          // console.log("gameIds2 tiene todos los gameIds1:", eval);
+        }
+        // console.log("------------------");
+        return (
+          purchase1 !== purchase2 &&
+          gameIds1.every((id) => gameIds2.includes(id))
+        );
+      });
     });
-    console.log("juegos ya filtrados:");
-    console.log(savedPurchaseIdsFilter);
+    console.log("juegos luego de quitar subconjuntos:");
+    console.log(filteredSavedPurchaseIds);
 
     let newCartItem = document.createElement("div");
     let j = 1;
-
-    if (savedPurchaseIdsFilter.length) {
-      for (const game of savedPurchaseIdsFilter) {
+    if (filteredSavedPurchaseIds.length) {
+      for (const game of filteredSavedPurchaseIds) {
         newCartItem.innerHTML = `
               <div class="cart_row even app_impression_tracked">
                 <div class="cart_item" style="text-align: center; display: flex; flex-direction: column; justify-content: space-evenly; font-size: 22px;">
                   <p>
-                    👀 cargando ${j} de ${savedPurchaseIdsFilter.length}
+                    👀 cargando ${j} de ${filteredSavedPurchaseIds.length}
                   </p>
                   <p>
                   🎮 ${game.name}
@@ -120,7 +206,8 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       cartItemList.prepend(newCartItem);
       clearInterval(intervalLoading);
       btnAddGamesToCart.innerText = "✅ listo";
-      window.location.reload();
+      // window.location.reload();
+      console.log("reload window");
     } else {
       clearInterval(intervalLoading);
       btnAddGamesToCart.innerText = "✅ sin cambios";

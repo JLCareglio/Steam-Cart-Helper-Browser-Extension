@@ -8,6 +8,7 @@
   ).savedPurchaseIdLists || [
     { listName: "Lista por Defecto", purchaseIds: [] },
   ];
+  console.log(savedPurchaseIdLists[0].purchaseIds);
   const listContainer = document.getElementById("list-container");
 
   // btn.back.onclick = () => (window.location.href = "popup.html");
@@ -24,9 +25,13 @@
     deleteButton.innerText = "🗑️";
     deleteButton.className = "btn-delete";
 
+    const link = `https://store.steampowered.com/${
+      game.subid ? "app/" + game.gameId : "bundle/" + listItem.id
+    }`;
+
     listItem.addEventListener("click", (event) => {
       if (event.target.tagName.toLowerCase() === "button") RemoveGame(game);
-      else window.open("https://store.steampowered.com/app/" + game.gameId);
+      else window.open(link);
     });
 
     listItem.appendChild(deleteButton);
