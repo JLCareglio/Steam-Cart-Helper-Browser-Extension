@@ -27,6 +27,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   const inputFilterByUser = document.createElement("input");
   const inputFilterByUser_datalist = document.createElement("datalist");
   // const selectLists = document.createElement("select");
+  let loadingText = "cargando...";
 
   btnAddGamesToCart.innerText = "➕ cargar";
   btnAddGamesToCart.classList.add("btn_black");
@@ -35,22 +36,22 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   btnAddGamesToCart.style.padding = "0 4px";
   btnAddGamesToCart.addEventListener("click", async () => {
     btnAddGamesToCart.style.pointerEvents = "none";
-    btnAddGamesToCart.innerText = "🕛 cargando...";
+    btnAddGamesToCart.innerText = "🕛 " + loadingText;
     let i = 0;
     const intervalLoading = setInterval(() => {
       const loading = [
-        "🕛 cargando...",
-        "🕐 cargando...",
-        "🕑 cargando...",
-        "🕒 cargando...",
-        "🕓 cargando...",
-        "🕔 cargando...",
-        "🕕 cargando...",
-        "🕖 cargando...",
-        "🕗 cargando...",
-        "🕘 cargando...",
-        "🕙 cargando...",
-        "🕚 cargando...",
+        "🕛 " + loadingText,
+        "🕐 " + loadingText,
+        "🕑 " + loadingText,
+        "🕒 " + loadingText,
+        "🕓 " + loadingText,
+        "🕔 " + loadingText,
+        "🕕 " + loadingText,
+        "🕖 " + loadingText,
+        "🕗 " + loadingText,
+        "🕘 " + loadingText,
+        "🕙 " + loadingText,
+        "🕚 " + loadingText,
       ];
       btnAddGamesToCart.innerText = loading[i % loading.length];
       i++;
@@ -101,14 +102,8 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     }
 
     if (userSelectedId && filteredSavedPurchaseIds.length) {
+      loadingText = "cargando (quitando 🎮 que 🙅🎁)...";
       if (userSelectedId !== currentUserId) {
-        userSelectedGames = await new Promise((resolve) => {
-          chrome.runtime.sendMessage(
-            { query: "FetchGames", id: userSelectedId },
-            resolve
-          );
-        });
-        console.log("userSelectedGames:", userSelectedGames);
         filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
           (purchase) =>
             !purchase.dsBundleData || !purchase.dsBundleData.m_bRestrictGifting
@@ -116,6 +111,17 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         console.log("noSelf, juegos luego de quitar los 'no-regalo':");
         console.log(filteredSavedPurchaseIds);
 
+        // loadingText = "cargando (obteniendo 🎮👉🤓)...";
+        loadingText = "cargando (comparando 🎁 con 🎮👉🤓)...";
+        userSelectedGames = await new Promise((resolve) => {
+          chrome.runtime.sendMessage(
+            { query: "FetchGames", id: userSelectedId },
+            resolve
+          );
+        });
+        console.log("userSelectedGames:", userSelectedGames);
+
+        loadingText = "cargando (quitando 🎁 que ya tiene 👉🤓)...";
         filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
           (purchase) => {
             const gameIds = purchase.dsBundleData?.m_rgItems.flatMap(
@@ -129,6 +135,8 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         console.log("-userSelectedGames únicos, juegos luego de filtro:");
         console.log(filteredSavedPurchaseIds);
       } else {
+        // loadingText = "cargando (obteniendo 🫵🎮)...";
+        loadingText = "cargando (comparando 🎁 con 🫵🎮)...";
         userSelectedGames = await fetch(
           "https://store.steampowered.com/dynamicstore/userdata/"
         )
@@ -137,6 +145,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
 
         console.log("userSelectedGames:", userSelectedGames);
 
+        loadingText = "cargando (quitando 🎁 que ya tienes)...";
         filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
           (purchase) => {
             const gameIds = purchase.dsBundleData?.m_rgItems.flatMap(
@@ -150,6 +159,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       }
     }
 
+    loadingText = "cargando (quitando subconjuntos de 🎮)...";
     filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter((purchase1) => {
       const gameIds1 = purchase1.dsBundleData?.m_rgItems.flatMap(
         (ids) => ids.m_rgIncludedAppIDs
@@ -176,6 +186,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     console.log("juegos luego de quitar subconjuntos:");
     console.log(filteredSavedPurchaseIds);
 
+    loadingText = "cargando (agregando 🎮 al 🛒)...";
     let newCartItem = document.createElement("div");
     let j = 1;
     if (filteredSavedPurchaseIds.length) {
@@ -206,7 +217,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       cartItemList.prepend(newCartItem);
       clearInterval(intervalLoading);
       btnAddGamesToCart.innerText = "✅ listo";
-      // window.location.reload();
+      window.location.reload();
       console.log("reload window");
     } else {
       clearInterval(intervalLoading);
