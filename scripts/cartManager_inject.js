@@ -301,7 +301,6 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   leftCol.prepend(inputFilterByUser);
 
   async function UpdateFriends() {
-    console.log("Actualizando Amigos");
     inputFilterByUser.disabled = true;
     inputFilterByUser.placeholder = "cargando amigos...";
     while (inputFilterByUser_datalist.childNodes.length > 2) {
@@ -309,48 +308,23 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         inputFilterByUser_datalist.lastChild
       );
     }
-    let friendsHTML = await new Promise((resolve) => {
+    let friends = await new Promise((resolve) => {
       chrome.runtime.sendMessage(
-        { query: "FetchFriendsHTML", id: currentUserId },
+        { query: "FetchFriends", id: currentUserId },
         resolve
       );
     });
-    const doc = new DOMParser().parseFromString(friendsHTML, "text/html");
-    try {
-      const friendsHtml = doc.querySelectorAll(
-        ".selectable.friend_block_v2.persona"
-      );
-      userInfo.friends = [];
+    userInfo.friends = friends;
+    friends.forEach((friend) => {
+      const option = document.createElement("option");
+      option.value = friend.userName;
+      option.dataset.id = friend.id;
+      inputFilterByUser_datalist.appendChild(option);
+    });
 
-      for (let friend of friendsHtml) {
-        let friendId = friend.dataset.steamid;
-        let friendMiniProfile = friend.dataset.miniprofile;
-        let friendImg = friend.querySelector("img").src;
-        let friendName = friend
-          .querySelector(".friend_block_content")
-          .textContent.trim()
-          .split("\n")[0];
-
-        userInfo.friends.push({
-          id: friendId,
-          userName: friendName,
-          miniProfile: friendMiniProfile,
-          img: friendImg,
-        });
-
-        const option = document.createElement("option");
-        option.value = friendName;
-        option.dataset.id = friendId;
-        inputFilterByUser_datalist.appendChild(option);
-      }
-      inputFilterByUser.placeholder = "🎁 comprar para:";
-      inputFilterByUser.disabled = false;
-      chrome.storage.local.set({ userInfo });
-    } catch (error) {
-      inputFilterByUser.placeholder = "❌ ERROR";
-      console.error(error);
-    }
-    console.log("Amigos Actualizados");
+    inputFilterByUser.placeholder = "🎁 comprar para:";
+    inputFilterByUser.disabled = false;
+    chrome.storage.local.set({ userInfo });
   }
   const MyAddToCart = (request) => {
     const g_sessionID = document.querySelector("[name='sessionid']").value;

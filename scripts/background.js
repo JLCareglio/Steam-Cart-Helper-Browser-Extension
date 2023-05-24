@@ -11,8 +11,8 @@ chrome.runtime.onMessage.addListener((request, sender, callback) => {
     case "FetchGames":
       FetchGames(request, callback);
       return true;
-    case "FetchFriendsHTML":
-      FetchFriendsHTML(request, callback);
+    case "FetchFriends":
+      FetchFriends(request, callback);
       return true;
   }
 
@@ -26,16 +26,16 @@ async function FetchGames(request, callback) {
 
   try {
     const resp = await fetch(fetchURL);
-    const html = await resp.text();
+    const HTML = await resp.text();
     let data = JSON.parse(
-      html.match(/data-profile-gameslist="(.+?)"/)[1].replace(/&quot;/g, '"')
+      HTML.match(/data-profile-gameslist="(.+?)"/)[1].replace(/&quot;/g, '"')
     );
     callback(data.rgGames);
   } catch (error) {
     try {
-      const html = await OpenAndExtractHTML(fetchURL);
+      const HTML = await OpenAndExtractHTML(fetchURL);
       let data = JSON.parse(
-        html.match(/data-profile-gameslist="(.+?)"/)[1].replace(/&quot;/g, '"')
+        HTML.match(/data-profile-gameslist="(.+?)"/)[1].replace(/&quot;/g, '"')
       );
       callback(data.rgGames);
     } catch (error) {
@@ -44,15 +44,51 @@ async function FetchGames(request, callback) {
   }
 }
 
-function FetchFriendsHTML(request, callback) {
+async function FetchFriends(request, callback) {
   const fetchURL = isNaN(request.id)
     ? `https://steamcommunity.com/id/${request.id}/friends`
     : `https://steamcommunity.com/profiles/${request.id}/friends`;
 
-  fetch(fetchURL)
-    .then((resp) => resp.text())
-    .then((html) => callback(html))
-    .catch((error) => callback(null));
+  // fetch(fetchURL)
+  //   .then((resp) => resp.text())
+  //   .then((html) => callback(html))
+  //   .catch((error) => callback(null));
+
+  const regex = {
+    friends: /selectable friend_block_v2 persona([\s\S]*?)friend_small_text/g,
+    steamid: /data-steamid="(\d+)"/,
+    miniprofile: /data-miniprofile="(\d+)"/,
+    name: /friend_block_content">(.+?)</,
+    src: /src="([^"]*)"/,
+  };
+
+  try {
+    const HTML = await fetch(fetchURL).then((resp) => resp.text());
+    let friends = HTML.match(regex.friends).map((friendData) => {
+      const id = friendData.match(regex.steamid)[1];
+      const miniProfile = friendData.match(regex.miniprofile)[1];
+      const userName = friendData.match(regex.name)[1];
+      const img = friendData.match(regex.src)[1];
+
+      return { id, userName, miniProfile, img };
+    });
+    callback(friends);
+  } catch (error) {
+    try {
+      const HTML = await OpenAndExtractHTML(fetchURL);
+      let friends = HTML.match(regex.friends).map((friendData) => {
+        const id = friendData.match(regex.steamid)[1];
+        const miniProfile = friendData.match(regex.miniprofile)[1];
+        const userName = friendData.match(regex.name)[1];
+        const img = friendData.match(regex.src)[1];
+
+        return { id, userName, miniProfile, img };
+      });
+      callback(friends);
+    } catch (error) {
+      callback(error);
+    }
+  }
 }
 
 function OpenAndExtractHTML(url) {
