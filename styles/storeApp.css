@@ -1,0 +1,40 @@
+.btn_save {
+  border-radius: 2px;
+  padding: 1px;
+  display: inline-block;
+  cursor: pointer;
+  text-decoration: none;
+  color: #ebebeb;
+  background-color: #70008a;
+  border: solid black 2px;
+  position: absolute;
+  top: 32px;
+  right: 0;
+}
+.btn_save:hover {
+  color: #000;
+  background: hsl(289, 30%, 70%);
+}
+
+.game_area_purchase_game_wrapper {
+  margin-bottom: 52px !important;
+}
+
+.game_area_purchase_not_refundable {
+  padding-left: 16px !important;
+  text-align: left !important;
+}
+.btn_black.btn_small.steamdb_link {
+  display: none;
+}
+.btn_steamDB_subid {
+  float: left;
+  margin-top: 8px;
+}
+.btn_steamDB_bundleid {
+  text-align: center;
+  position: absolute;
+  left: 0;
+  top: 32px;
+  padding: 1px 0 !important;
+}

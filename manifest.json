@@ -24,7 +24,8 @@
   "content_scripts": [
     {
       "matches": ["https://store.steampowered.com/app/*"],
-      "js": ["scripts/savePurchaseIds_inject.js"]
+      "js": ["scripts/storeApp_inject.js"],
+      "css": ["styles/storeApp.css"]
     },
     {
       "matches": ["https://store.steampowered.com/cart*"],
