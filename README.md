@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="160" height="160" alt="CacheLib" src="images/icon-160.png">
+  <img width="256" src="images/SCH-Max.svg">
 </p>
 <h1 align="center"> SCH - Steam Cart Helper</h1>
 <p align="left">
