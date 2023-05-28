@@ -7,7 +7,9 @@ document.querySelector(".leftcol").style.marginTop = "2px";
 document.querySelector(".leftcol").parentNode.prepend(leftCol);
 const cartItemList = document.querySelector(".cart_item_list");
 
-let currentUserName = document.querySelector("#account_pulldown")?.innerText;
+let currentUserName = document
+  .querySelector("#account_pulldown")
+  ?.innerText.trim();
 let currentUserId =
   document
     .querySelector("#global_actions .user_avatar")
