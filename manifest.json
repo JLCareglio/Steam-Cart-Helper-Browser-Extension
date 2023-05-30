@@ -2,8 +2,9 @@
   "manifest_version": 3,
   "name": "Steam Cart Helper",
   "short_name": "SCH",
-  "version": "0.8.4",
-  "description": "🛒 Extensión que te ayuda a ahorrar tiempo agregando funcionalidades al carrito de compras de Steam",
+  "version": "0.9.1",
+  "description": "__MSG_extension_description__",
+  "default_locale": "es",
   "homepage_url": "https://github.com/JLCareglio/Steam-Cart-Helper-chromium-extension",
   "icons": {
     "16": "images/icon-16.png",
@@ -24,12 +25,12 @@
   "content_scripts": [
     {
       "matches": ["https://store.steampowered.com/app/*"],
-      "js": ["scripts/storeApp_inject.js"],
+      "js": ["scripts/global.js", "scripts/storeApp_inject.js"],
       "css": ["styles/storeApp.css"]
     },
     {
       "matches": ["https://store.steampowered.com/cart*"],
-      "js": ["scripts/cartManager_inject.js"]
+      "js": ["scripts/global.js", "scripts/storeCart_inject.js"]
     }
   ]
 }

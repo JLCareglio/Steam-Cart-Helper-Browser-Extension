@@ -3,10 +3,9 @@
   let gameId = parseInt(url.split("/app/")[1].split("/")[0]);
   const subIds = document.querySelectorAll('[name="subid"]');
   const bundleIds = document.querySelectorAll('[name="bundleid"]');
-  let savedPurchaseIdLists = (
-    await chrome.storage.local.get("savedPurchaseIdLists")
-  ).savedPurchaseIdLists || [
-    { listName: "Lista por Defecto", purchaseIds: [] },
+  let savedPurchaseIdLists = (await _get("savedPurchaseIdLists"))
+    .savedPurchaseIdLists || [
+    { listName: _txt("default_list_name"), purchaseIds: [] },
   ];
   console.log(savedPurchaseIdLists);
 
@@ -29,17 +28,16 @@
         list.purchaseIds.some((p) => p[typeId] == purchaseId)
       );
       button.innerHTML = hasPurchaseInLists
-        ? "🗑️ eliminar" //"📝 Administrar"
-        : "💾 guardar";
+        ? _txt("btn_remove") //"📝 Administrar"
+        : _txt("btn_save");
       button.classList.value = "btn_save";
       button.style.width = btn_addtocart.clientWidth + "px";
       btn_addtocart.appendChild(button);
 
       button.addEventListener("click", async () => {
-        savedPurchaseIdLists = (
-          await chrome.storage.local.get("savedPurchaseIdLists")
-        ).savedPurchaseIdLists || [
-          { listName: "Lista por Defecto", purchaseIds: [] },
+        savedPurchaseIdLists = (await _get("savedPurchaseIdLists"))
+          .savedPurchaseIdLists || [
+          { listName: _txt("default_list_name"), purchaseIds: [] },
         ];
         const [inLists, notInLists] = savedPurchaseIdLists.reduce(
           ([inList, notInList], list) => {
@@ -59,7 +57,7 @@
             dsBundleData,
           });
           // button.innerHTML = "📝 Administrar";
-          button.innerHTML = "🗑️ eliminar";
+          button.innerHTML = _txt("btn_remove");
         } else {
           const newLists = inLists.map((list) => {
             return {
@@ -70,9 +68,9 @@
             };
           });
           savedPurchaseIdLists = [...newLists, ...notInLists];
-          button.innerHTML = "💾 guardar";
+          button.innerHTML = _txt("btn_save");
         }
-        chrome.storage.local.set({ savedPurchaseIdLists });
+        _set({ savedPurchaseIdLists });
       });
 
       const aux = gameE.children[1];
@@ -101,16 +99,20 @@
       if (typeId == "subid") {
         steamdb.classList.value = "btn_black btn_small btn_steamDB_subid";
         steamdb.href = `https://steamdb.info/sub/${purchaseId}/`;
-        steamdb.innerHTML = `<span data-tooltip-text="View on SteamDB">Sub ${purchaseId}</span>`;
+        steamdb.innerHTML = `<span data-tooltip-text=${_txt(
+          "view_on_steamDB"
+        )}>Sub ${purchaseId}</span>`;
         gameE.querySelector(".game_purchase_action").prepend(steamdb);
       } else {
         const packageE = gameE.querySelector(".btn_addtocart.btn_packageinfo");
         steamdb.classList.value = "btn_black btn_small btn_steamDB_bundleid";
         steamdb.href = `https://steamdb.info/bundle/${purchaseId}/`;
-        steamdb.innerHTML = `<span data-tooltip-text="View on SteamDB">Bundle ${purchaseId}</span>`;
+        steamdb.innerHTML = `<span data-tooltip-text=${_txt(
+          "view_on_steamDB"
+        )}>Bundle ${purchaseId}</span>`;
         steamdb.style.width = packageE.clientWidth + "px";
         packageE.appendChild(steamdb);
-        packageE.parentNode.style.float = "left"
+        packageE.parentNode.style.float = "left";
       }
     }
   });

@@ -20,18 +20,18 @@ let currentUserId =
     ?.href.match(/\/id\/([^/]+)/)
     ?.at(-1);
 
-chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
+_get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   let userInfo = resp.userInfo;
   // let savedPurchaseIdLists = resp.savedPurchaseIdLists || [
-  //   { listName: "Lista por Defecto", purchaseIds: [] },
+  //   { listName: _txt("default_list_name"), purchaseIds: [] },
   // ];
   const btnAddGamesToCart = document.createElement("button");
   const inputFilterByUser = document.createElement("input");
   const inputFilterByUser_datalist = document.createElement("datalist");
   // const selectLists = document.createElement("select");
-  let loadingText = "cargando...";
+  let loadingText = _txt("loading") + "...";
 
-  btnAddGamesToCart.innerText = "➕ cargar";
+  btnAddGamesToCart.innerText = _txt("load");
   btnAddGamesToCart.classList.add("btn_black");
   btnAddGamesToCart.style.height = "29px";
   btnAddGamesToCart.style.margin = "2px";
@@ -59,10 +59,9 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       i++;
     }, 50);
 
-    let savedPurchaseIdLists = (
-      await chrome.storage.local.get("savedPurchaseIdLists")
-    ).savedPurchaseIdLists || [
-      { listName: "Lista por Defecto", purchaseIds: [] },
+    let savedPurchaseIdLists = (await _get("savedPurchaseIdLists"))
+      .savedPurchaseIdLists || [
+      { listName: _txt("default_list_name"), purchaseIds: [] },
     ];
 
     let filteredSavedPurchaseIds = savedPurchaseIdLists[0].purchaseIds;
@@ -103,9 +102,10 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       console.log(filteredSavedPurchaseIds);
     }
 
-    if (userSelectedId && filteredSavedPurchaseIds.length) {
-      loadingText = "cargando (quitando 🎮 que 🙅🎁)...";
-      if (userSelectedId !== currentUserId) {
+    if (filteredSavedPurchaseIds.length) {
+      if (userSelectedId && userSelectedId !== currentUserId) {
+        loadingText = _txt("removing_non_giftables");
+
         filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
           (purchase) =>
             !purchase.dsBundleData || !purchase.dsBundleData.m_bRestrictGifting
@@ -114,7 +114,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         console.log(filteredSavedPurchaseIds);
 
         // loadingText = "cargando (obteniendo 🎮👉🤓)...";
-        loadingText = "cargando (comparando 🎁 con 🎮👉🤓)...";
+        loadingText = _txt("comparing_games");
         userSelectedGames = await new Promise((resolve) => {
           chrome.runtime.sendMessage(
             { query: "FetchGames", id: userSelectedId },
@@ -123,7 +123,8 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         });
         console.log("userSelectedGames:", userSelectedGames);
 
-        loadingText = "cargando (quitando 🎁 que ya tiene 👉🤓)...";
+        // loadingText = "cargando (quitando 🎁 que ya tiene 👉🤓)...";
+        loadingText = _txt("removing_already_acquired");
         filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
           (purchase) => {
             const gameIds = purchase.dsBundleData?.m_rgItems.flatMap(
@@ -136,9 +137,9 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         );
         console.log("-userSelectedGames únicos, juegos luego de filtro:");
         console.log(filteredSavedPurchaseIds);
-      } else {
+      } else if (!userSelectedId || userSelectedId == currentUserId) {
         // loadingText = "cargando (obteniendo 🫵🎮)...";
-        loadingText = "cargando (comparando 🎁 con 🫵🎮)...";
+        loadingText = _txt("comparing_games");
         userSelectedGames = await fetch(
           "https://store.steampowered.com/dynamicstore/userdata/"
         )
@@ -147,7 +148,8 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
 
         console.log("userSelectedGames:", userSelectedGames);
 
-        loadingText = "cargando (quitando 🎁 que ya tienes)...";
+        // loadingText = "cargando (quitando 🎁 que ya tienes)...";
+        loadingText = _txt("removing_already_acquired");
         filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter(
           (purchase) => {
             const gameIds = purchase.dsBundleData?.m_rgItems.flatMap(
@@ -161,7 +163,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       }
     }
 
-    loadingText = "cargando (quitando subconjuntos de 🎮)...";
+    loadingText = _txt("removing_subsets");
     filteredSavedPurchaseIds = filteredSavedPurchaseIds.filter((purchase1) => {
       const gameIds1 = purchase1.dsBundleData?.m_rgItems.flatMap(
         (ids) => ids.m_rgIncludedAppIDs
@@ -188,16 +190,17 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     console.log("juegos luego de quitar subconjuntos:");
     console.log(filteredSavedPurchaseIds);
 
-    loadingText = "cargando (agregando 🎮 al 🛒)...";
+    loadingText = _txt("adding_to_cart");
     let newCartItem = document.createElement("div");
     let j = 1;
-    if (filteredSavedPurchaseIds.length) {
+    const cantGames = filteredSavedPurchaseIds.length;
+    if (cantGames) {
       for (const game of filteredSavedPurchaseIds) {
         newCartItem.innerHTML = `
               <div class="cart_row even app_impression_tracked">
                 <div class="cart_item" style="text-align: center; display: flex; flex-direction: column; justify-content: space-evenly; font-size: 22px;">
                   <p>
-                    👀 cargando ${j} de ${filteredSavedPurchaseIds.length}
+                    👀 ${_txt("loading")} ${j + "/" + cantGames}
                   </p>
                   <p>
                   🎮 ${game.name}
@@ -213,19 +216,19 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       newCartItem.innerHTML = `
             <div class="cart_row even app_impression_tracked">
               <p class="cart_item" style="display: flex; justify-content: center; align-items: center; font-size: 22px;">
-                ✅ recargando pagina...
+                ${_txt("reloading_web_page")}
               </p>
             </div>`;
       cartItemList.prepend(newCartItem);
       clearInterval(intervalLoading);
-      btnAddGamesToCart.innerText = "✅ listo";
+      btnAddGamesToCart.innerText = _txt("done");
       window.location.reload();
-      console.log("reload window");
+      // console.log("reload window");
     } else {
       clearInterval(intervalLoading);
-      btnAddGamesToCart.innerText = "✅ sin cambios";
+      btnAddGamesToCart.innerText = _txt("without_changes");
       setTimeout(() => {
-        btnAddGamesToCart.innerText = "➕ cargar";
+        btnAddGamesToCart.innerText = _txt("load");
         btnAddGamesToCart.style.pointerEvents = "auto";
       }, 700);
     }
@@ -235,7 +238,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   inputFilterByUser.type = "search";
   inputFilterByUser.setAttribute("list", "users_datalist");
   inputFilterByUser.appendChild(inputFilterByUser_datalist);
-  inputFilterByUser.placeholder = "🎁 comprar para:";
+  inputFilterByUser.placeholder = "🎁 " + _txt("buy_for_me");
   inputFilterByUser.classList.add("btn_black");
   inputFilterByUser.style.height = "29px";
   // inputFilterByUser.style.width = "144px";
@@ -261,11 +264,11 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   });
   if (currentUserId) {
     const optionSelf = document.createElement("option");
-    optionSelf.value = `mí (${currentUserName})`;
+    optionSelf.value = _txt("buy_for_me");
     optionSelf.dataset.id = currentUserId;
     inputFilterByUser_datalist.appendChild(optionSelf);
     const optionUpdate = document.createElement("option");
-    optionUpdate.value = `actualizar amigos`;
+    optionUpdate.value = _txt("update_friends");
     optionUpdate.dataset.id = "updateFriends";
     inputFilterByUser_datalist.appendChild(optionUpdate);
     if (currentUserId === userInfo?.steamid) {
@@ -304,7 +307,7 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
 
   async function UpdateFriends() {
     inputFilterByUser.disabled = true;
-    inputFilterByUser.placeholder = "cargando amigos...";
+    inputFilterByUser.placeholder = _txt("loading_friends");
     while (inputFilterByUser_datalist.childNodes.length > 2) {
       inputFilterByUser_datalist.removeChild(
         inputFilterByUser_datalist.lastChild
@@ -324,9 +327,9 @@ chrome.storage.local.get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       inputFilterByUser_datalist.appendChild(option);
     });
 
-    inputFilterByUser.placeholder = "🎁 comprar para:";
+    inputFilterByUser.placeholder = "🎁 " + _txt("buy_for_me");
     inputFilterByUser.disabled = false;
-    chrome.storage.local.set({ userInfo });
+    _set({ userInfo });
   }
   const MyAddToCart = (request) => {
     const g_sessionID = document.querySelector("[name='sessionid']").value;

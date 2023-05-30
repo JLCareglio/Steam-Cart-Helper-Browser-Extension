@@ -3,10 +3,9 @@
     back: document.getElementById("btn-back"),
     removeAll: document.getElementById("btn-removeAll"),
   };
-  let savedPurchaseIdLists = (
-    await chrome.storage.local.get("savedPurchaseIdLists")
-  ).savedPurchaseIdLists || [
-    { listName: "Lista por Defecto", purchaseIds: [] },
+  let savedPurchaseIdLists = (await _get("savedPurchaseIdLists"))
+    .savedPurchaseIdLists || [
+    { listName: _txt("default_list_name"), purchaseIds: [] },
   ];
   console.log(savedPurchaseIdLists[0].purchaseIds);
   const listContainer = document.getElementById("list-container");
@@ -40,7 +39,9 @@
   });
 
   if (!listContainer.children.length)
-    listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">sin juegos guardados</h1>`;
+    listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">${_txt(
+      "no_games_saved"
+    )}</h1>`;
 
   function RemoveGame(game) {
     const id = game.subid ?? game.bundleid;
@@ -49,11 +50,15 @@
       savedPurchaseIdLists[0].purchaseIds.filter(
         (game) => (game.subid ?? game.bundleid) !== id
       );
-    chrome.storage.local.set({ savedPurchaseIdLists });
+    _set({ savedPurchaseIdLists });
     if (!listContainer.children.length) {
-      listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">✅ todo eliminado</h1>`;
+      listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">${_txt(
+        "all_removed"
+      )}</h1>`;
       setTimeout(() => {
-        listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">sin juegos guardados</h1>`;
+        listContainer.innerHTML = `<h1 style="padding: 22px;margin: 8px;">${_txt(
+          "no_games_saved"
+        )}</h1>`;
       }, 900);
     }
   }

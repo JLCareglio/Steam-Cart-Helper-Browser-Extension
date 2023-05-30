@@ -9,7 +9,7 @@ function ImportData() {
       const content = event.target.result;
       try {
         const savedPurchaseIdLists = JSON.parse(content).savedPurchaseIdLists;
-        chrome.storage.local.set({ savedPurchaseIdLists });
+        _set({ savedPurchaseIdLists });
         btn.import.innerHTML = `
             <span style="font-size: 22px">✅</span>
             <span>listo</span>`;
@@ -31,7 +31,7 @@ function ImportData() {
 }
 
 function ExportData() {
-  chrome.storage.local.get("savedPurchaseIdLists", (resp) => {
+  _get("savedPurchaseIdLists", (resp) => {
     let savedPurchaseIdLists = resp.savedPurchaseIdLists;
     const currentDate = new Date();
     const dateString = currentDate

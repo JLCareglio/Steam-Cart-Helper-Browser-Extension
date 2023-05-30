@@ -1,10 +1,3 @@
-// let runtime;
-// if (typeof browser !== "undefined" && typeof browser.runtime !== "undefined")
-//   runtime = browser.runtime;
-// else if (typeof chrome !== "undefined" && typeof chrome.runtime !== "undefined")
-//   runtime = chrome.runtime;
-// else throw new Error("API runtime no encontrado");
-
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   if (!sender || !sender.tab || !("query" in request)) return false;
   switch (request.query) {

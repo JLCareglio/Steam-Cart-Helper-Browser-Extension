@@ -1,0 +1,86 @@
+{
+  "extension_description": {
+    "message": "🛒 Extensión que te ayuda a ahorrar tiempo agregando funcionalidades al carrito de compras de Steam"
+  },
+  "title": {
+    "message": "💾 juegos guardados",
+    "description": "Título de lista_guardada de los juegos_guardados."
+  },
+  "default_list_name": {
+    "message": "Lista por Defecto",
+    "description": "Nombre por defecto de la primer lista_guardada"
+  },
+  "btn_remove_all": {
+    "message": "🗑️ eliminar todo",
+    "description": "Botón que elimina todos los juegos_guardados en lista_guardada."
+  },
+  "no_games_saved": {
+    "message": "sin juegos guardados",
+    "description": "Texto para indicar que no hay juegos_guardados."
+  },
+  "all_removed": {
+    "message": "✅ todo eliminado",
+    "description": "Texto para indicar que todos los juegos_guardados fueron eliminados"
+  },
+  "btn_remove": {
+    "message": "🗑️ eliminar",
+    "description": "Texto del botón para eliminar"
+  },
+  "btn_save": {
+    "message": "💾 guardar",
+    "description": "Texto del botón para guardar"
+  },
+  "view_on_steamDB": {
+    "message": "Ver en SteamDB",
+    "description": "Tooltip de enlace a SteamDB al apuntar sobre botón subID o bundleID"
+  },
+  "buy_for_me": { "message": "comprar para mí" },
+  "load": {
+    "message": "➕ cargar",
+    "description": "Botón que inicia la carga de juegos_guardados desde lista_guardada seleccionada"
+  },
+  "loading": {
+    "message": "cargando",
+    "description": "Texto para indicar una carga, puede estar acompañado de un 🕛 o ..."
+  },
+  "removing_non_giftables": {
+    "message": "cargando (quitando 🎮 que 🙅🎁)...",
+    "description": "Texto para indicar que se están quitando los juegos que no se pueden regalar"
+  },
+  "removing_already_acquired": {
+    "message": "cargando (quitando 🎁 ya adquiridos)...",
+    "description": "Texto para indicar que se están quitando los juegos ya adquiridos"
+  },
+  "removing_subsets": {
+    "message": "cargando (quitando subconjuntos de 🎮)...",
+    "description": "Texto para indicar que se están quitando los juegos ya incluidos dentro de otro subconjunto de juegos"
+  },
+  "comparing_games": {
+    "message": "cargando (comparando 🎁 con 🎮👉🤓)...",
+    "description": "Texto para indicar que se están obteniendo los juegos ya adquiridos y comparándolos con los que se van a cargar al carrito"
+  },
+  "adding_to_cart": {
+    "message": "cargando (agregando 🎮 al 🛒)...",
+    "description": "Texto para indicar que se están agregando juegos al carrito"
+  },
+  "without_changes": {
+    "message": "✅ sin cambios",
+    "description": "Texto para indicar que no se realizaron cambios en el carrito"
+  },
+  "reloading_web_page": {
+    "message": "✅ recargando página...",
+    "description": "Texto para indicar que se esta recargando la pagina web"
+  },
+  "done": {
+    "message": "✅ listo",
+    "description": "Texto para indicar que una o varias tareas ya fueron terminadas"
+  },
+  "loading_friends": {
+    "message": "cargando amigos...",
+    "description": "Texto para indicar que se esta obteniendo la lista de amigos del usuario actual"
+  },
+  "update_friends": {
+    "message": "actualizar amigos",
+    "description": "Opción que sirve para obtener y actualizar la lista de amigos del usuario actual"
+  }
+}
