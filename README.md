@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="256" src="images/SCH-Max.svg">
+  <img width="256" heigth="256" src="images/SCH-Max.svg">
 </p>
 <h1 align="center"> SCH - Steam Cart Helper</h1>
 <p align="left">
