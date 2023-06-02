@@ -1,0 +1,26 @@
+.leftcol_sch {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.btn_sch {
+  height: 29px;
+  margin: 2px;
+  padding: 0 4px !important;
+}
+
+.cart_loading_sch {
+  text-align: center !important;
+  display: flex;
+  flex-direction: column !important;
+  justify-content: space-evenly !important;
+  font-size: 22px !important;
+}
+
+.cart_reloading_sch {
+  display: flex;
+  justify-content: center !important;
+  align-items: center !important;
+  font-size: 22px !important;
+}

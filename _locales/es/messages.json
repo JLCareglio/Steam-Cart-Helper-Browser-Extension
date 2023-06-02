@@ -34,14 +34,33 @@
     "message": "Ver en SteamDB",
     "description": "Tooltip de enlace a SteamDB al apuntar sobre botón subID o bundleID"
   },
-  "buy_for_me": { "message": "comprar para mí" },
-  "load": {
-    "message": "➕ cargar",
-    "description": "Botón que inicia la carga de juegos_guardados desde lista_guardada seleccionada"
+  "buy_for_me": {
+    "message": "comprar para mí",
+    "description": "Opción que indica que los artículos en carrito o por agregar son para el usuario que actualmente inicio sesión"
+  },
+  "add_saves_to_cart": {
+    "message": "➕ agregar guardados al 🛒",
+    "description": "Botón para agregar al carrito juegos_guardados desde lista_guardada seleccionada"
+  },
+  "remove_all_from_cart": {
+    "message": "🗑️ eliminar 🛒",
+    "description": "Botón para eliminar todos los artículos en el carrito"
+  },
+  "clean": {
+    "message": "🧹 limpiar",
+    "description": "Botón para eliminar todos los artículos ya adquiridos o redundantes en el carrito"
+  },
+  "remove_already_owned": {
+    "message": "🧹 eliminar 'ya adquiridos'",
+    "description": "Botón para eliminar todos los artículos ya adquiridos en el carrito"
   },
   "loading": {
     "message": "cargando",
-    "description": "Texto para indicar una carga, puede estar acompañado de un 🕛 o ..."
+    "description": "Texto para indicar una carga de items, puede estar acompañado de un 🕛 o ..."
+  },
+  "removing": {
+    "message": "eliminando",
+    "description": "Texto para indicar una eliminación de items, puede estar acompañado de un 🕛 o ..."
   },
   "removing_non_giftables": {
     "message": "cargando (quitando 🎮 que 🙅🎁)...",
@@ -76,11 +95,15 @@
     "description": "Texto para indicar que una o varias tareas ya fueron terminadas"
   },
   "loading_friends": {
-    "message": "cargando amigos...",
+    "message": "🤓 cargando amigos...",
     "description": "Texto para indicar que se esta obteniendo la lista de amigos del usuario actual"
   },
-  "update_friends": {
-    "message": "actualizar amigos",
-    "description": "Opción que sirve para obtener y actualizar la lista de amigos del usuario actual"
+  "loading_games": {
+    "message": "🎮 cargando juegos...",
+    "description": "Texto para indicar que se esta obteniendo la lista de juegos del usuario actual"
+  },
+  "update_user_info": {
+    "message": "🗄️ actualizar",
+    "description": "Opción que sirve para obtener y actualizar la lista de amigos y juegos del usuario actual"
   }
 }
