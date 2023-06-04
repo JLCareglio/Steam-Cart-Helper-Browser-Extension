@@ -38,6 +38,14 @@
     "message": "comprar para mí",
     "description": "Opción que indica que los artículos en carrito o por agregar son para el usuario que actualmente inicio sesión"
   },
+  "not_logged_in": {
+    "message": "⚠️ sin iniciar sesión",
+    "description": "Botón que te lleva a la pagina de inicio de sesión para obtener mas funciones al estar conectado"
+  },
+  "login_for_more_features": {
+    "message": "💡 inicia sesión para obtener mas funciones 👍",
+    "description": "Tooltip para comunicar que al iniciar sesión se obtendrán mas funciones"
+  },
   "add_saves_to_cart": {
     "message": "➕ agregar guardados al 🛒",
     "description": "Botón para agregar al carrito juegos_guardados desde lista_guardada seleccionada"
@@ -51,8 +59,12 @@
     "description": "Botón para eliminar todos los artículos ya adquiridos o redundantes en el carrito"
   },
   "remove_already_owned": {
-    "message": "🧹 eliminar 'ya adquiridos'",
-    "description": "Botón para eliminar todos los artículos ya adquiridos en el carrito"
+    "message": "🧼 limpiar ya adquiridos",
+    "description": "Botón para eliminar todos los artículos que están en el carrito y ya fueron adquiridos por el usuario seleccionado"
+  },
+  "remove_non_giftables": {
+    "message": "🧼 limpiar no-regalables",
+    "description": "Botón para eliminar todos los artículos que están en el carrito y que no se pueden regalar"
   },
   "loading": {
     "message": "cargando",
@@ -67,7 +79,7 @@
     "description": "Texto para indicar que se están quitando los juegos que no se pueden regalar"
   },
   "removing_already_acquired": {
-    "message": "cargando (quitando 🎁 ya adquiridos)...",
+    "message": "cargando (quitando ya adquiridos)...",
     "description": "Texto para indicar que se están quitando los juegos ya adquiridos"
   },
   "removing_subsets": {
@@ -75,7 +87,7 @@
     "description": "Texto para indicar que se están quitando los juegos ya incluidos dentro de otro subconjunto de juegos"
   },
   "comparing_games": {
-    "message": "cargando (comparando 🎁 con 🎮👉🤓)...",
+    "message": "cargando (comparando con 🎮👉🤓)...",
     "description": "Texto para indicar que se están obteniendo los juegos ya adquiridos y comparándolos con los que se van a cargar al carrito"
   },
   "adding_to_cart": {

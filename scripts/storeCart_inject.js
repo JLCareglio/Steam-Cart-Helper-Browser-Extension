@@ -28,13 +28,11 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   const inputFilterByUser = document.createElement("input");
   const inputFilterByUser_datalist = document.createElement("datalist");
   // const selectLists = document.createElement("select");
-  const btnRemoveAll = document.createElement("button");
-  btnRemoveAll.classList.add("btn_black", "btn_sch");
-  const btnRemoveRedundant = btnRemoveAll.cloneNode();
-  const btnRemoveAlreadyOwned = btnRemoveAll.cloneNode();
-  // const btnRemoveNonGiftables = btnRemoveAll.cloneNode();
-
-  let loadingText = _txt("loading") + "...";
+  btnAddGamesToCart.classList.add("btn_black", "btn_sch");
+  const btnLogin = btnAddGamesToCart.cloneNode();
+  const btnRemoveAll = btnAddGamesToCart.cloneNode();
+  const btnRemoveAlreadyOwned = btnAddGamesToCart.cloneNode();
+  const btnRemoveNonGiftables = btnAddGamesToCart.cloneNode();
 
   const cartItems = Array.from(cartItemList.querySelectorAll(".cart_row")).map(
     (item) => ({
@@ -49,7 +47,42 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   );
   console.log("cartItems", cartItems);
 
+  btnAddGamesToCart.innerText = _txt("add_saves_to_cart");
+  btnAddGamesToCart.onclick = HandlerAddGames;
+
+  inputFilterByUser.placeholder = "🎁 " + _txt("buy_for_me");
+  inputFilterByUser_datalist.id = "users_datalist";
+  inputFilterByUser.type = "search";
+  inputFilterByUser.setAttribute("list", "users_datalist");
+  inputFilterByUser.appendChild(inputFilterByUser_datalist);
+  inputFilterByUser.classList.add("btn_black", "btn_sch");
+  inputFilterByUser.onclick = (e) => (e.target.value = "");
+  inputFilterByUser.onchange = (e) => HandlerChangeInputUser(e);
+
+  btnLogin.innerText = _txt("not_logged_in");
+  btnLogin.onclick = () =>
+    (window.location = "https://store.steampowered.com/login/?redir=cart%2F");
+
+  // selectLists.classList.add("btn_black", "btn_sch");
+  // const option = document.createElement("option");
+  // option.value = "0";
+  // option.innerText = "cargar desde:";
+  // selectLists.appendChild(option);
+  // savedPurchaseIdLists.forEach((list, index) => {
+  //   const option = document.createElement("option");
+  //   option.value = index;
+  //   option.innerText = list.listName;
+  //   selectLists.appendChild(option);
+  // });
+
+  btnContainer1.prepend(btnAddGamesToCart);
+  // btnContainer1.prepend(selectLists);
+
   if (cartItems.length) {
+    let userSelectedId = document.querySelector(
+      '#users_datalist option[value="' + inputFilterByUser.value + '"]'
+    )?.dataset.id;
+
     const cleanableItems = cartItems.reduce((acc, obj) => {
       const key = obj.cartDescExt;
       if (!acc[key]) acc[key] = [];
@@ -57,6 +90,31 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       return acc;
     }, {});
     // console.log("cleanableItems", cleanableItems);
+
+    const nonGiftablesItems = cartItems.filter(
+      (item) => item.dsBundleData?.m_bRestrictGifting
+    );
+
+    if (nonGiftablesItems.length) {
+      btnRemoveNonGiftables.innerText = _txt("remove_non_giftables");
+      btnRemoveNonGiftables.onclick = async () => {
+        DisableButtonsPointerEvents();
+        for (const [i, item] of nonGiftablesItems.entries()) {
+          btnRemoveNonGiftables.innerText = `🫧 ${_txt("removing")} (${i + 1}/${
+            nonGiftablesItems.length
+          })...`;
+          const resp = await MyRemoveFromCart(item.cartGid);
+          console.log(await resp);
+          cartItemList.querySelector("#" + item.cartId).remove();
+        }
+        btnRemoveNonGiftables.innerText = _txt("reloading_web_page");
+        window.location = window.location;
+      };
+      btnRemoveNonGiftables.style.display =
+        userSelectedId && userSelectedId !== currentUserId ? "auto" : "none";
+      btnContainer2.prepend(btnRemoveNonGiftables);
+    }
+
     for (const key in cleanableItems) {
       if (key == "undefined") continue;
       const items = cleanableItems[key];
@@ -64,9 +122,9 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       btn.innerText = `${_txt("clean")} ${items.length}: '${key}'`;
       btn.classList.add("btn_black", "btn_sch");
       btn.addEventListener("click", async () => {
-        btn.style.pointerEvents = "none";
+        DisableButtonsPointerEvents();
         for (const [i, item] of items.entries()) {
-          btn.innerText = `🧼 ${_txt("removing")} (${i + 1}/${
+          btn.innerText = `🍃 ${_txt("removing")} (${i + 1}/${
             items.length
           })...`;
           const resp = await MyRemoveFromCart(item.cartGid);
@@ -84,11 +142,37 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     btnContainer1.appendChild(btnRemoveAll);
   }
 
-  btnAddGamesToCart.innerText = _txt("add_saves_to_cart");
-  btnAddGamesToCart.classList.add("btn_black", "btn_sch");
-  btnAddGamesToCart.addEventListener("click", async () => {
+  if (currentUserId) {
+    btnContainer1.prepend(inputFilterByUser);
+
+    const optionSelf = document.createElement("option");
+    optionSelf.value = "🫵 " + _txt("buy_for_me");
+    optionSelf.dataset.id = currentUserId;
+    inputFilterByUser_datalist.appendChild(optionSelf);
+    const optionUpdate = document.createElement("option");
+    optionUpdate.value = _txt("update_user_info");
+    optionUpdate.dataset.id = "updateUserInfo";
+    inputFilterByUser_datalist.appendChild(optionUpdate);
+    if (currentUserId === userInfo?.steamid) {
+      userInfo.friends.forEach((user) => {
+        const option = document.createElement("option");
+        option.value = "🎁 " + user.userName;
+        option.dataset.id = user.id;
+        inputFilterByUser_datalist.appendChild(option);
+      });
+    } else {
+      userInfo = { steamid: currentUserId, name: currentUserName };
+      UpdateUserInfo();
+    }
+  } else {
+    inputFilterByUser.style.display = "none";
+    btnContainer1.appendChild(btnLogin);
+  }
+
+  async function HandlerAddGames() {
+    DisableButtonsPointerEvents(true);
+    let loadingText = _txt("loading") + "...";
     const btnAddGamesToCartWidth = btnAddGamesToCart.clientWidth + "px";
-    btnAddGamesToCart.style.pointerEvents = "none";
     btnAddGamesToCart.innerText = "🕛 " + loadingText;
     let i = 0;
     const intervalLoading = setInterval(() => {
@@ -274,82 +358,51 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       setTimeout(() => {
         btnAddGamesToCart.style.width = "";
         btnAddGamesToCart.innerText = _txt("add_saves_to_cart");
-        btnAddGamesToCart.style.pointerEvents = "auto";
+        DisableButtonsPointerEvents(false);
       }, 700);
     }
-  });
+  }
 
-  inputFilterByUser_datalist.id = "users_datalist";
-  inputFilterByUser.type = "search";
-  inputFilterByUser.setAttribute("list", "users_datalist");
-  inputFilterByUser.appendChild(inputFilterByUser_datalist);
-  inputFilterByUser.placeholder = "🎁 " + _txt("buy_for_me");
-  inputFilterByUser.classList.add("btn_black", "btn_sch");
-  inputFilterByUser.addEventListener("click", (e) => {
-    if (e.target.value != "") {
-      e.target.value = "";
-      // inputFilterByUser.setAttribute("list", "");
-      // inputFilterByUser.setAttribute("list", "users_datalist");
-      // e.target.blur();
-      // e.target.focus();
-    }
-  });
-  inputFilterByUser.addEventListener("change", (e) => {
+  async function HandlerChangeInputUser() {
     const userSelectedId = document.querySelector(
       '#users_datalist option[value="' + inputFilterByUser.value + '"]'
     )?.dataset.id;
-    if (userSelectedId === "updateUserInfo") {
-      inputFilterByUser.value = "";
-      UpdateUserInfo();
-    }
+    if (userSelectedId === "updateUserInfo") UpdateUserInfo();
     if (userSelectedId && userSelectedId !== currentUserId) {
       btnRemoveAlreadyOwned.style.display = "none";
+      btnRemoveNonGiftables.style.display = "block";
+      // if (!btnRemoveNonGiftables.parentElement && cartItems.length) {
+      //   let loadingText = _txt("comparing_games");
+      //   let userSelectedGames = await new Promise((resolve) => {
+      //     chrome.runtime.sendMessage(
+      //       { query: "FetchGames", id: userSelectedId },
+      //       resolve
+      //     );
+      //   });
+      //   console.log("userSelectedGames:", userSelectedGames);
+
+      //   // loadingText = _txt("removing_already_acquired");
+      //   const ownedItems = cartItems.filter((item) => {
+      //     const gameIds = item.dsBundleData?.m_rgItems.flatMap(
+      //       (ids) => ids.m_rgIncludedAppIDs
+      //     ) ?? [item.gameId];
+      //     return !userSelectedGames.some((userGame) =>
+      //       gameIds.includes(userGame.appid)
+      //     );
+      //   });
+
+      //   if (ownedItems.length) {
+      //     btnRemoveAlreadyOwned.style.display = "block";
+      //   }
+      // }
     } else {
+      btnRemoveNonGiftables.style.display = "none";
       btnRemoveAlreadyOwned.style.display = "block";
     }
-  });
-
-  if (currentUserId) {
-    const optionSelf = document.createElement("option");
-    optionSelf.value = "🫵 " + _txt("buy_for_me");
-    optionSelf.dataset.id = currentUserId;
-    inputFilterByUser_datalist.appendChild(optionSelf);
-    const optionUpdate = document.createElement("option");
-    optionUpdate.value = _txt("update_user_info");
-    optionUpdate.dataset.id = "updateUserInfo";
-    inputFilterByUser_datalist.appendChild(optionUpdate);
-    if (currentUserId === userInfo?.steamid) {
-      userInfo.friends.forEach((user) => {
-        const option = document.createElement("option");
-        option.value = "🎁 " + user.userName;
-        option.dataset.id = user.id;
-        inputFilterByUser_datalist.appendChild(option);
-      });
-    } else {
-      userInfo = { steamid: currentUserId, name: currentUserName };
-      UpdateUserInfo();
-    }
-  } else {
-    inputFilterByUser.style.display = "none";
   }
 
-  // selectLists.classList.add("btn_black", "btn_sch");
-  // const option = document.createElement("option");
-  // option.value = "0";
-  // option.innerText = "cargar desde:";
-  // selectLists.appendChild(option);
-  // savedPurchaseIdLists.forEach((list, index) => {
-  //   const option = document.createElement("option");
-  //   option.value = index;
-  //   option.innerText = list.listName;
-  //   selectLists.appendChild(option);
-  // });
-
-  btnContainer1.prepend(btnAddGamesToCart);
-  // btnContainer1.prepend(selectLists);
-  btnContainer1.prepend(inputFilterByUser);
-
   async function UpdateUserInfo() {
+    DisableButtonsPointerEvents(true);
     inputFilterByUser.disabled = true;
     inputFilterByUser.placeholder = _txt("loading_friends");
     while (inputFilterByUser_datalist.childNodes.length > 2) {
@@ -381,12 +434,14 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
 
     inputFilterByUser.placeholder = _txt("done");
     inputFilterByUser.disabled = false;
+    DisableButtonsPointerEvents(false);
     setTimeout(() => {
       inputFilterByUser.placeholder = "🎁 " + _txt("buy_for_me");
     }, 1000);
     _set({ userInfo });
   }
-  const MyAddToCart = (request) => {
+
+  function MyAddToCart(request) {
     const g_sessionID = document.querySelector("[name='sessionid']").value;
     const formData = new FormData();
     formData.set("action", "add_to_cart");
@@ -414,9 +469,9 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         .then((data) => resolve(data))
         .catch((error) => reject(error));
     });
-  };
+  }
 
-  const MyRemoveFromCart = (gid) => {
+  function MyRemoveFromCart(gid) {
     const g_sessionID = document.querySelector("[name='sessionid']").value;
     const formData = new FormData();
     formData.set("action", "remove_line_item");
@@ -433,9 +488,9 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         .then((data) => resolve(data))
         .catch((error) => reject(error));
     });
-  };
+  }
 
-  const MyForgetCart = () => {
+  function MyForgetCart() {
     try {
       document.querySelector(".remove_ctn>a").dispatchEvent(new Event("click"));
     } catch (error) {
@@ -445,5 +500,11 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       document.cookie = "shoppingCartGID" + "=-1; " + expires + "; path=/";
       window.location = window.location;
     }
-  };
+  }
+
+  function DisableButtonsPointerEvents(disable = true) {
+    const cssValue = disable ? "none" : "auto";
+    btnContainer1.style.pointerEvents = cssValue;
+    btnContainer2.style.pointerEvents = cssValue;
+  }
 });
