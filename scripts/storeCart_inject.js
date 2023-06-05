@@ -459,6 +459,8 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
 
   async function UpdateUserInfo() {
     DisableButtonsPointerEvents(true);
+    btnRemoveNonGiftables.style.display = "none";
+    btnRemoveAlreadyOwned.style.display = "block";
     inputFilterByUser.disabled = true;
     inputFilterByUser.value = "";
     inputFilterByUser.placeholder = _txt("loading_friends");
