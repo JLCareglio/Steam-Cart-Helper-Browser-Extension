@@ -367,8 +367,9 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     const userSelectedId = document.querySelector(
       '#users_datalist option[value="' + inputFilterByUser.value + '"]'
     )?.dataset.id;
-    if (userSelectedId === "updateUserInfo") UpdateUserInfo();
-    if (userSelectedId && userSelectedId !== currentUserId) {
+
+    if (userSelectedId == "updateUserInfo") UpdateUserInfo();
+    else if (userSelectedId && userSelectedId !== currentUserId) {
       btnRemoveAlreadyOwned.style.display = "none";
       btnRemoveNonGiftables.style.display = "block";
       // if (!btnRemoveNonGiftables.parentElement && cartItems.length) {
@@ -404,6 +405,7 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   async function UpdateUserInfo() {
     DisableButtonsPointerEvents(true);
     inputFilterByUser.disabled = true;
+    inputFilterByUser.value = "";
     inputFilterByUser.placeholder = _txt("loading_friends");
     while (inputFilterByUser_datalist.childNodes.length > 2) {
       inputFilterByUser_datalist.removeChild(

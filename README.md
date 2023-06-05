@@ -17,7 +17,7 @@
 ## Descripción
 
 <p>
-  🛒 Extensión para navegadores Chromium que te ayuda a ahorrar tiempo agregando funcionalidades al carrito de compras de Steam
+  🛒 Extensión para navegadores que te ayuda a ahorrar tiempo agregando funcionalidades al carrito de compras de Steam
   <br>
   <h3>Features</h3>
   <ul>
