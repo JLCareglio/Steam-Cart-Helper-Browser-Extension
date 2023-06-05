@@ -57,7 +57,9 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   inputFilterByUser.appendChild(inputFilterByUser_datalist);
   inputFilterByUser.classList.add("btn_black", "btn_sch");
   inputFilterByUser.onclick = (e) => (e.target.value = "");
-  inputFilterByUser.onchange = (e) => HandlerChangeInputUser(e);
+  inputFilterByUser.onchange = HandlerChangeInputUser;
+  inputFilterByUser.onmouseover = HandlerMouseOverInputUser;
+  inputFilterByUser.onmouseout = HandlerMouseOutInputUser;
 
   btnLogin.innerText = _txt("not_logged_in");
   btnLogin.onclick = () =>
@@ -138,7 +140,7 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     }
 
     btnRemoveAll.innerText = _txt("remove_all_from_cart");
-    btnRemoveAll.addEventListener("click", (e) => MyForgetCart());
+    btnRemoveAll.onclick = MyForgetCart;
     btnContainer1.appendChild(btnRemoveAll);
   }
 
@@ -147,16 +149,19 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
 
     const optionSelf = document.createElement("option");
     optionSelf.value = "🫵 " + _txt("buy_for_me");
+    optionSelf.setAttribute("name", _txt("buy_for_me").toLowerCase());
     optionSelf.dataset.id = currentUserId;
     inputFilterByUser_datalist.appendChild(optionSelf);
     const optionUpdate = document.createElement("option");
-    optionUpdate.value = _txt("update_user_info");
+    optionUpdate.value = "🗄️ " + _txt("update_user_info");
+    optionUpdate.setAttribute("name", _txt("update_user_info").toLowerCase());
     optionUpdate.dataset.id = "updateUserInfo";
     inputFilterByUser_datalist.appendChild(optionUpdate);
     if (currentUserId === userInfo?.steamid) {
       userInfo.friends.forEach((user) => {
         const option = document.createElement("option");
         option.value = "🎁 " + user.userName;
+        option.setAttribute("name", user.userName.toLowerCase());
         option.dataset.id = user.id;
         inputFilterByUser_datalist.appendChild(option);
       });
@@ -363,15 +368,26 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     }
   }
 
-  async function HandlerChangeInputUser() {
-    const userSelectedId = document.querySelector(
-      '#users_datalist option[value="' + inputFilterByUser.value + '"]'
+  async function HandlerChangeInputUser(e) {
+    const targetName = /^(🎁 |🗄️ |🫵 ).*/.test(e.target.value)
+      ? e.target.value.split(" ").slice(1).join(" ").toLowerCase()
+      : e.target.value.toLowerCase().trim();
+    console.log({ targetName }, e.target.value);
+    let userSelectedId = e.target.querySelector(
+      '#users_datalist option[name="' + targetName + '"]'
     )?.dataset.id;
 
-    if (userSelectedId == "updateUserInfo") UpdateUserInfo();
-    else if (userSelectedId && userSelectedId !== currentUserId) {
-      btnRemoveAlreadyOwned.style.display = "none";
-      btnRemoveNonGiftables.style.display = "block";
+    console.log("Seleccionado: ", e.target.value, userSelectedId);
+
+    if (!userSelectedId) {
+      e.target.value = "";
+      e.target.placeholder = _txt("nonexistent_user");
+      userInfo.lastUserSelected = null;
+      setTimeout(() => {
+        e.target.placeholder = "🎁 " + _txt("buy_for_me");
+      }, 1000);
+      btnRemoveAlreadyOwned.style.display = "block";
+      btnRemoveNonGiftables.style.display = "none";
       // if (!btnRemoveNonGiftables.parentElement && cartItems.length) {
       //   let loadingText = _txt("comparing_games");
       //   let userSelectedGames = await new Promise((resolve) => {
@@ -396,10 +412,49 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
       //     btnRemoveAlreadyOwned.style.display = "block";
       //   }
       // }
-    } else {
-      btnRemoveNonGiftables.style.display = "none";
+    } else if (userSelectedId == "updateUserInfo") UpdateUserInfo();
+    else if (userSelectedId != currentUserId) {
+      const friendName = userInfo.friends.find(
+        (friend) => friend.id == userSelectedId
+      ).userName;
+      e.target.value = "🎁 " + friendName;
+      userInfo.lastUserSelected = {
+        userSelectedName: e.target.value,
+        userName: friendName,
+        id: userSelectedId,
+      };
+      btnRemoveAlreadyOwned.style.display = "none";
+      btnRemoveNonGiftables.style.display = "block";
+    } else if (userSelectedId == currentUserId) {
+      e.target.value = "🫵 " + _txt("buy_for_me");
+      userInfo.lastUserSelected = {
+        userSelectedName: e.target.value,
+        userName: currentUserName,
+        id: userSelectedId,
+      };
       btnRemoveAlreadyOwned.style.display = "block";
+      btnRemoveNonGiftables.style.display = "none";
     }
+  }
+  function HandlerMouseOverInputUser(e) {
+    const userSelectedId = e.target.querySelector(
+      '#users_datalist option[value="' + e.target.value + '"]'
+    )?.dataset.id;
+    if (!userSelectedId) return;
+
+    userInfo.lastUserSelected = {
+      userSelectedName: e.target.value,
+      userName: e.target.value.replace("🎁 ", ""),
+      id: userSelectedId,
+    };
+    e.target.value = "";
+    e.target.placeholder = userInfo.lastUserSelected.userSelectedName;
+  }
+  function HandlerMouseOutInputUser(e) {
+    if (!userInfo.lastUserSelected) return;
+    e.target.value = userInfo.lastUserSelected.userSelectedName;
+    userInfo.lastUserSelected = null;
+    e.target.placeholder = "🎁 " + _txt("buy_for_me");
   }
 
   async function UpdateUserInfo() {
@@ -407,6 +462,7 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     inputFilterByUser.disabled = true;
     inputFilterByUser.value = "";
     inputFilterByUser.placeholder = _txt("loading_friends");
+    userInfo.lastUserSelected = null;
     while (inputFilterByUser_datalist.childNodes.length > 2) {
       inputFilterByUser_datalist.removeChild(
         inputFilterByUser_datalist.lastChild
@@ -418,10 +474,14 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         resolve
       );
     });
+    friends.sort((a, b) => a.id.localeCompare(b.id));
+    friends.sort((a, b) => a.userName.localeCompare(b.userName));
+
     userInfo.friends = friends;
     friends.forEach((friend) => {
       const option = document.createElement("option");
       option.value = "🎁 " + friend.userName;
+      option.setAttribute("name", friend.userName.toLowerCase());
       option.dataset.id = friend.id;
       inputFilterByUser_datalist.appendChild(option);
     });
