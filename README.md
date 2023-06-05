@@ -29,10 +29,8 @@
 
 ## Capturas de Pantalla
 
-![screenshot_popup](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/9fc0759f-5f45-4b5e-aa69-4b7f2a1e6e7d)
-![screenshot_store](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/42003972-fa72-4066-b0af-b1ad1bcbecd7)
-![screenshot_cart](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/assets/23004689/87b71f28-f5b4-429f-a2e8-191c3960902e)
+🚧 Sección en construcción
 
 ## Contribuye programando
 
-🧑‍💻 El proyecto acepta contribuciones, por lo que siéntete libre de hacer un [Forck](https://github.com/JLCareglio/Steam-Cart-Helper-Chromium-Extension/fork) al mismo para poder modificarlo aportando solución a errores o nuevas características.
+🧑‍💻 El proyecto acepta contribuciones, por lo que siéntete libre de hacer un [Forck](https://github.com/JLCareglio/Steam-Cart-Helper-Browser-Extension/fork) al mismo para poder modificarlo aportando solución a errores o nuevas características.
