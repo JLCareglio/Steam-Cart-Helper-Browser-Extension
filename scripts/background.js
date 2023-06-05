@@ -112,7 +112,7 @@ async function FetchFriends(request, callback) {
       });
       callback(friends);
     } catch (error) {
-      callback(error);
+      callback([]);
     }
   }
 }

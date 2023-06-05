@@ -62,8 +62,10 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
   inputFilterByUser.onmouseout = HandlerMouseOutInputUser;
 
   btnLogin.innerText = _txt("not_logged_in");
-  btnLogin.onclick = () =>
-    (window.location = "https://store.steampowered.com/login/?redir=cart%2F");
+  btnLogin.onclick = () => {
+    window.location = "https://store.steampowered.com/login/?redir=cart%2F";
+    window.open("https://steamcommunity.com/login/home");
+  };
 
   // selectLists.classList.add("btn_black", "btn_sch");
   // const option = document.createElement("option");
@@ -476,6 +478,7 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
         resolve
       );
     });
+    console.log(friends);
     friends.sort((a, b) => a.id.localeCompare(b.id));
     friends.sort((a, b) => a.userName.localeCompare(b.userName));
 
