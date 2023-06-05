@@ -21,15 +21,19 @@
   <br>
   <h3>Features</h3>
   <ul>
-    <li>Crear, guardar y administrar listas de compras de juegos (por ahora solo gestiona una lista por defecto)</li>
-    <li>Adaptar el carrito omitiendo los juegos que ya tengas</li>
-    <li>Adaptar el carrito para regalar juegos a un amigo (omitiendo los juegos que ya tenga)</li>
+    <li>Guardar y administrar juegos en una lista de compras.</li>
+    <li>Adaptar el carrito omitiendo los juegos que ya tengas.</li>
+    <li>Adaptar el carrito para regalar juegos a un amigo (omitiendo los juegos que ya tenga).</li>
+    <li>Limpiar el carrito quitando productos redundantes.</li>
   </ul>
 </p>
 
 ## Capturas de Pantalla
 
-🚧 Sección en construcción
+<p align="center">
+  <img src="images/Screenshot-StoreCart.png" alt="SteamCart con funciones añadidas">
+  <img src="images/Screenshot-StoreApp.png" alt="Botones para guardar juegos">
+</p>
 
 ## Contribuye programando
 
