@@ -1,5 +1,5 @@
 <p align="center">
-  <img height="256" src="images/SCH-SmallBanner.svg">
+  <img width="400px" src="images/SCH-SmallBanner.svg">
 </p>
 <h1 align="center"> SCH - Steam Cart Helper</h1>
 <p align="left">
