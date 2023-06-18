@@ -453,7 +453,7 @@ _get(["userInfo", "savedPurchaseIdLists"], async (resp) => {
     e.target.placeholder = userInfo.lastUserSelected.userSelectedName;
   }
   function HandlerMouseOutInputUser(e) {
-    if (!userInfo.lastUserSelected) return;
+    if (!userInfo.lastUserSelected || e.target.value != "") return;
     e.target.value = userInfo.lastUserSelected.userSelectedName;
     userInfo.lastUserSelected = null;
     e.target.placeholder = "🎁 " + _txt("buy_for_me");
