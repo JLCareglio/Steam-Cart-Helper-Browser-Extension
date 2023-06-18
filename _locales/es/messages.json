@@ -115,7 +115,7 @@
     "description": "Texto para indicar que se esta obteniendo la lista de juegos del usuario actual"
   },
   "update_user_info": {
-    "message": "actualizar",
+    "message": "actualizar datos",
     "description": "Opción que sirve para obtener y actualizar la lista de amigos y juegos del usuario actual"
   },
   "nonexistent_user": {
