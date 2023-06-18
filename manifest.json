@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Steam Cart Helper",
   "short_name": "SCH",
-  "version": "0.9.9",
+  "version": "1.0.1",
   "description": "__MSG_extension_description__",
   "default_locale": "es",
   "homepage_url": "https://github.com/JLCareglio/Steam-Cart-Helper-Browser-Extension",
@@ -26,6 +26,11 @@
     {
       "matches": ["https://store.steampowered.com/app/*"],
       "js": ["scripts/global.js", "scripts/storeApp_inject.js"],
+      "css": ["styles/storeApp.css"]
+    },
+    {
+      "matches": ["https://store.steampowered.com/bundle/*"],
+      "js": ["scripts/global.js", "scripts/storeBundle_inject.js"],
       "css": ["styles/storeApp.css"]
     },
     {
