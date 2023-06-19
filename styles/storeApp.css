@@ -42,3 +42,18 @@
 #store_header_cart_btn {
   display: inline-block !important;
 }
+
+@media (max-width: 500px) {
+  .btn_steamDB_subid {
+    display: none !important;
+  }
+  .btn_steamDB_bundleid {
+    display: none !important;
+  }
+  .game_area_purchase_game_wrapper {
+    margin-bottom: 28px !important;
+  }
+  .game_area_purchase_game{
+    padding-bottom: 32px !important;
+  }
+}
