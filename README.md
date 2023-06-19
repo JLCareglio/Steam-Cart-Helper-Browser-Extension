@@ -3,6 +3,9 @@
 </p>
 <h1 align="center"> SCH - Steam Cart Helper</h1>
 <p align="left">
+  <a href="https://microsoftedge.microsoft.com/addons/detail/steam-cart-helper/afgkhaceenngofnbpbhdbehopaihdoji" target="_blank">
+    <img src="https://img.shields.io/badge/download-edge_addon-blue?logo=microsoftedge&link=https%3A%2F%2Fmicrosoftedge.microsoft.com%2Faddons%2Fdetail%2Fsteam-cart-helper%2Fafgkhaceenngofnbpbhdbehopaihdoji">
+  <a>
   <img src="https://img.shields.io/badge/license-MIT-blue">
   <img src="https://img.shields.io/github/stars/JLCareglio?style=social">
 </p>
@@ -11,6 +14,7 @@
 
 - [📝 Índice](#índice)
 - [ℹ️ Descripción](#descripción)
+- [👉 Descargar](#descargar)
 - [👀 Capturas de Pantalla](#capturas-de-pantalla)
 - [🧑‍💻 Contribuye programando](#contribuye-programando)
 
@@ -27,6 +31,10 @@
     <li>Limpiar el carrito quitando productos redundantes.</li>
   </ul>
 </p>
+
+## Descargar
+
+La extensión está publicada oficialmente en la tienda de complementos de Edge, aquí puedes descargarla e instalarla: [https://microsoftedge.microsoft.com/addons/detail/steam-cart-helper/afgkhaceenngofnbpbhdbehopaihdoji](https://microsoftedge.microsoft.com/addons/detail/steam-cart-helper/afgkhaceenngofnbpbhdbehopaihdoji)
 
 ## Capturas de Pantalla
 
