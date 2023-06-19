@@ -33,9 +33,14 @@
 </p>
 
 ## Descargar
+<p>
+  La extensión está publicada oficialmente en la tienda de complementos de Edge, aquí puedes descargarla e instalarla:
+  <br>
+  <a href="https://microsoftedge.microsoft.com/addons/detail/steam-cart-helper/afgkhaceenngofnbpbhdbehopaihdoji">
+    https://microsoftedge.microsoft.com/addons/detail/steam-cart-helper/afgkhaceenngofnbpbhdbehopaihdoji
+  </a>
+</p>
 
-La extensión está publicada oficialmente en la tienda de complementos de Edge, aquí puedes descargarla e instalarla:
-[https://microsoftedge.microsoft.com/addons/detail/steam-cart-helper/afgkhaceenngofnbpbhdbehopaihdoji](https://microsoftedge.microsoft.com/addons/detail/steam-cart-helper/afgkhaceenngofnbpbhdbehopaihdoji)
 
 ## Capturas de Pantalla
 
