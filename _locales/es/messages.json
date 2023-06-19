@@ -121,5 +121,29 @@
   "nonexistent_user": {
     "message": "⚠️ usuario inexistente",
     "description": "Texto para indicar que el usuario buscado no existe"
+  },
+  "btn_import": {
+    "message": "📥 importar",
+    "description": "Botón para importar datos"
+  },
+  "btn_export": {
+    "message": "📤 exportar",
+    "description": "Botón para exportar datos"
+  },
+  "title_options": {
+    "message": "Configuración de la extensión",
+    "description": "Título de la sección de opciones"
+  },
+  "change_language": {
+    "message": "Cambiar de idioma",
+    "description": "Título de la opción para cambiar el idioma"
+  },
+  "manege_lists": {
+    "message": "Administrar juegos guardados",
+    "description": "Título de la opción para administrar los juegos guardados"
+  },
+  "warning_import_lists": {
+    "message": "Atención: La importación sobrescribirá los datos existentes.",
+    "description": "Advertencia sobre la importación de juegos"
   }
 }

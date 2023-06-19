@@ -1,3 +1,13 @@
+chrome.runtime.onInstalled.addListener(function () {
+  // Obtener el idioma del navegador del usuario
+  const userLanguage = chrome.i18n.getUILanguage();
+
+  // Establecer el idioma de la extensión al idioma del usuario
+  chrome.i18n.detectLanguage(userLanguage, function (result) {
+    chrome.i18n.setLanguage(result.languages[0].language);
+  });
+});
+
 chrome.runtime.onMessage.addListener((request, sender, callback) => {
   if (!sender || !sender.tab || !("query" in request)) return false;
   switch (request.query) {

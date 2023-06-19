@@ -2,10 +2,12 @@
   "manifest_version": 3,
   "name": "Steam Cart Helper",
   "short_name": "SCH",
-  "version": "1.0.1",
+  "version": "1.1.2",
   "description": "__MSG_extension_description__",
   "default_locale": "es",
   "homepage_url": "https://github.com/JLCareglio/Steam-Cart-Helper-Browser-Extension",
+  "options_page": "options/options.html",
+  "options_ui": { "page": "options/options.html" },
   "icons": {
     "16": "images/icon-16.png",
     "32": "images/icon-32.png",

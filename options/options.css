@@ -1,0 +1,42 @@
+body {
+  background-color: var(--background);
+  color: var(--on-background);
+  padding: 20px;
+}
+
+h1 {
+  color: var(--primary);
+  padding: 0;
+  margin: 0;
+  padding-bottom: 10px;
+}
+
+h2 {
+  color: var(--secondary);
+  margin-top: 20px;
+  margin-bottom: 2px;
+}
+
+button {
+  background-color: var(--primary-container);
+  color: var(--on-primary-container);
+  border: none;
+  padding: 10px 10px;
+  margin: 8px 0px 0px 5px;
+  border-radius: var(--shape-corner);
+  cursor: pointer;
+}
+
+select {
+  background-color: var(--secondary-container);
+  color: var(--on-secondary-container);
+  padding: 5px;
+  border-radius: var(--shape-corner);
+}
+
+.warning {
+  margin: 0px;
+  padding: 0px;
+  color: var(--tertiary);
+  font-size: 12px;
+}

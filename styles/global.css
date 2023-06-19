@@ -29,4 +29,6 @@
   --on-surface-variant: #cac4d0;
   /* constantes */
   --shape-corner: 12px;
+  /* fuente */
+  font-family: Arial, sans-serif;
 }

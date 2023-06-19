@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Configuración de la extensión</title>
+    <link rel="stylesheet" href="../styles/global.css" />
+    <link rel="stylesheet" href="./options.css" />
+  </head>
+  <body>
+    <h1 id="title">Configuración de la extensión</h1>
+
+    <h2 id="subtitleChangeLang">Cambiar de idioma</h2>
+    <select id="languageSelect">
+      <option value="es">Español</option>
+      <!-- <option value="en">English</option> -->
+    </select>
+
+    <h2 id="subtitleLists">Administrar juegos guardados</h2>
+    <p id="warningImport" class="warning">
+      Atención: La importación sobrescribirá los datos existentes.
+    </p>
+    <button id="importButton">Importar</button>
+    <button id="exportButton">Exportar</button>
+    <button id="removeAllButton">Eliminar Todo</button>
+
+    <script src="../scripts/global.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
