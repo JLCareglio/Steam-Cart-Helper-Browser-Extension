@@ -3,6 +3,9 @@
     btn_import: document.getElementById("importButton"),
     btn_export: document.getElementById("exportButton"),
     btn_removeAll: document.getElementById("removeAllButton"),
+    btn_github: document.getElementById("githubButton"),
+    btn_edgeAddon: document.getElementById("edgeAddonButton"),
+    btn_paypal: document.getElementById("paypalButton"),
     title: document.getElementById("title"),
     subtitleChangeLang: document.getElementById("subtitleChangeLang"),
     languageSelect: document.getElementById("languageSelect"),
@@ -26,6 +29,16 @@
   ui.btn_import.onclick = ImportData;
   ui.btn_export.onclick = ExportData;
   ui.btn_removeAll.onclick = RemoveData;
+  ui.btn_github.onclick = () =>
+    window.open(
+      "https://github.com/JLCareglio/Steam-Cart-Helper-Browser-Extension"
+    );
+  ui.btn_edgeAddon.onclick = () =>
+    window.open(
+      "https://microsoftedge.microsoft.com/addons/detail/steam-cart-helper/afgkhaceenngofnbpbhdbehopaihdoji"
+    );
+  ui.btn_paypal.onclick = () =>
+    window.open("https://www.paypal.com/paypalme/JLCareglio");
 
   function ImportData() {
     const input = document.createElement("input");
@@ -41,7 +54,7 @@
           _set({ savedPurchaseIdLists });
           ui.btn_import.innerText = _txt("done");
         } catch (error) {
-          ui.btn_import.innerText = `❌`;
+          ui.btn_import.innerText = `❌ ERROR`;
         }
         setTimeout(() => {
           ui.btn_import.innerText = _txt("btn_import");
