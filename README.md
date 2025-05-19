@@ -12,13 +12,16 @@
 
 ## Índice
 
-- [📝 Índice](#índice)
-- [ℹ️ Descripción](#descripción)
-- [👉 Descargar](#descargar)
-- [👀 Capturas de Pantalla](#capturas-de-pantalla)
-- [🧑‍💻 Contribuye programando](#contribuye-programando)
+- [Índice](#índice)
+- [Descripción](#descripción)
+- [Descargar](#descargar)
+- [Capturas de Pantalla](#capturas-de-pantalla)
+- [Contribuye programando](#contribuye-programando)
 
 ## Descripción
+
+> [!IMPORTANT]  
+> ⚠️ El proyecto fue archivado debido a la falta de usuarios activos. Sin embargo, gran parte del código sigue siendo funcional y queda a disposición de cualquier persona que desee modificarlo, utilizarlo o darle mantenimiento. Siéntete libre de hacer un fork del repositorio si deseas continuar su desarrollo.
 
 <p>
   🛒 Extensión para navegadores que te ayuda a ahorrar tiempo agregando funcionalidades al carrito de compras de Steam
